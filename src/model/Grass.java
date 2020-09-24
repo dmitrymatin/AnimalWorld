@@ -1,13 +1,9 @@
 package model;
 
-public class Grass {
-
-    private String name;
-    private float m;
+public class Grass extends Food {
 
     public Grass(String name, float m) {
-        this.name = name;
-        this.m = m;
+        super(name, m);
     }
 
     public String GetInfo() {

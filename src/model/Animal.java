@@ -1,14 +1,24 @@
 package model;
 
-public abstract class Animal {
-    protected String name;
-    protected float m;
+public abstract class Animal extends Food {
+
     protected boolean isAlive;
 
-    protected Animal(String name, float m) {
-        this.name = name;
-        this.m = m;
-        isAlive = true;
+    public Animal(String name, float m) {
+        super(name, m);
+        this.isAlive = true;
+    }
+
+    public void eat(Food food) {
+        if (this instanceof Predator && food instanceof Animal) {
+            // predator can eat any animal
+            Animal animalToEat = (Animal) food;
+            animalToEat.kill();
+            this.m += animalToEat.m / 2f;
+        } else if (this instanceof Herbivore && food instanceof Grass) {
+            // herbivore can eat only grass
+            this.m += food.m / 5f;
+        }
     }
 
     public void kill() {
