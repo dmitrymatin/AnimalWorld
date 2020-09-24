@@ -43,7 +43,5 @@ public abstract class Animal {
     public void setAlive(boolean isAlive) {
         this.isAlive = isAlive;
     }
-
-
 }
 
