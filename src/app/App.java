@@ -9,14 +9,17 @@ public class App {
         Animal rabbit = new Herbivore("Зайка Игорь", 10);
         Grass clover = new Grass("Трава Капуста", 0.25f);
 
-        System.out.println(wolf.GetInfo());
-        System.out.println(fox.GetInfo());
-        System.out.println(rabbit.GetInfo());
-        System.out.println(clover.GetInfo());
+        System.out.println(wolf.getInfo());
+        System.out.println(fox.getInfo());
+        System.out.println(rabbit.getInfo());
+        System.out.println(clover.getInfo());
 
         System.out.println("Заяц умирает...");
         rabbit.kill();
-        System.out.println(rabbit.GetInfo());
-    }
+        System.out.println(rabbit.getInfo());
 
+        // hunting
+        Predator foxAsHunter = (Predator)fox;
+        foxAsHunter.seeFood(rabbit);
+    }
 }
