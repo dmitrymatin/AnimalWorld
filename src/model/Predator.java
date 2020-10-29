@@ -21,7 +21,7 @@ public class Predator extends Animal {
             if (hunt(animalToEat))
                 eat(animalToEat);
             else
-                System.out.println("Predator got hungry but could not hunt for animals");
+                System.out.println("(Debug) Predator got hungry but could not catch the animal " + animalToEat);
         }
      }
 
@@ -37,6 +37,7 @@ public class Predator extends Animal {
 
         animalToEat.kill();
         float massTaken = animalToEat.m / 2f;
+
         animalToEat.m -= massTaken;
         this.m += massTaken;
 
