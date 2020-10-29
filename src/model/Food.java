@@ -6,8 +6,8 @@ public abstract class Food {
 
     protected Food(String name, float m) throws IllegalArgumentException {
         if (m <= 0)
-            throw new IllegalArgumentException("Cannot create entity of type"
-                    + this.getClass() + " with negative mass");
+            throw new IllegalArgumentException("Cannot create entity of type "
+                    + this.getClass().getName() + " with negative mass");
         this.name = name;
         this.m = m;
     }

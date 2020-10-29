@@ -20,6 +20,35 @@ public class App {
 
         // hunting
         Predator foxAsHunter = (Predator)fox;
-        foxAsHunter.seeFood(rabbit);
+
+        try{
+            foxAsHunter.seeFood(clover); // пытаемся покормить не своей едой (4)
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+        try {
+            foxAsHunter.seeFood(rabbit); // пытаемся покормить хищника мертвым животным (5)
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+
+        fox.kill();
+        try {
+            fox.kill();    // пытаемся убить мертвое в kill (1)
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
+        try {
+            fox.seeFood(wolf); // пытаемся покормить мертвое животное (3)
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
+
+
+        try {
+            Food unrealFox = new Predator("Unreal fox", -3.5f); // пытаемся создать животное (наследник Food) с отрицательной массой (2)
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
     }
 }
