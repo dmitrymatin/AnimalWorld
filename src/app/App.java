@@ -1,5 +1,6 @@
 package app;
 import model.*;
+import model.exceptions.IllegalFoodException;
 
 public class App {
 
@@ -20,6 +21,16 @@ public class App {
 
         // hunting
         Predator foxAsHunter = (Predator)fox;
-        foxAsHunter.seeFood(rabbit);
+
+        try{
+            foxAsHunter.seeFood(clover); // пытаемся покормить не своей едой (5)
+        } catch (IllegalFoodException e) {
+            e.printStackTrace();
+        }
+        try {
+            foxAsHunter.seeFood(rabbit); // пытаемся покормить хищника мертвым животным (5)
+        } catch (IllegalFoodException e) {
+            e.printStackTrace();
+        }
     }
 }
