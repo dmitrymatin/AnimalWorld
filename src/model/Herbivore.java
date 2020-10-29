@@ -1,5 +1,6 @@
 package model;
 
+import model.exceptions.DeadAnimalException;
 import model.exceptions.IllegalFoodException;
 
 import java.util.Random;
@@ -10,9 +11,9 @@ public class Herbivore extends Animal {
         super(name, m);
     }
 
-    public void seeFood(Food food) throws IllegalStateException, IllegalFoodException {
+    public void seeFood(Food food) throws DeadAnimalException, IllegalFoodException {
         if (!this.isAlive)
-            throw new IllegalStateException("Cannot perform actions on dead herbivore");
+            throw new DeadAnimalException("Cannot perform actions on dead herbivore");
 
         if (!(food instanceof Grass))
             throw new IllegalFoodException("Herbivore can only view grass as food");

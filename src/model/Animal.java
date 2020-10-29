@@ -1,5 +1,7 @@
 package model;
 
+import model.exceptions.DeadAnimalException;
+
 public abstract class Animal extends Food {
 
     protected boolean isAlive;
@@ -12,9 +14,9 @@ public abstract class Animal extends Food {
     public abstract void seeFood(Food food); // former seePrey
     protected abstract void eat(Food food);
 
-    public void kill() throws IllegalStateException {
+    public void kill() throws DeadAnimalException {
         if (!isAlive)
-            throw new IllegalStateException("Cannot kill a dead animal");
+            throw new DeadAnimalException("Cannot kill a dead animal");
         isAlive = false;
    }
 
