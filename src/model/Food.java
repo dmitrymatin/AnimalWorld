@@ -15,4 +15,20 @@ public abstract class Food {
     public String getInfo(){
         return "name = " + name + " mass = " + m;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public float getM() {
+        return m;
+    }
+
+    public void setM(float m) {
+        this.m = m;
+    }
 }
