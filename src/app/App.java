@@ -2,6 +2,7 @@ package app;
 import model.*;
 import model.exceptions.DeadAnimalException;
 import model.exceptions.IllegalFoodException;
+import model.exceptions.NegativeMassException;
 
 public class App {
 
@@ -43,6 +44,13 @@ public class App {
         try {
             fox.seeFood(wolf); // пытаемся покормить мертвое животное (3)
         } catch (DeadAnimalException e) {
+            e.printStackTrace();
+        }
+
+
+        try {
+            Food unrealFox = new Predator("Unreal fox", -3.5f); // пытаемся создать животное (наследник Food) с отрицательной массой (2)
+        } catch (NegativeMassException e) {
             e.printStackTrace();
         }
     }
