@@ -9,14 +9,46 @@ public class App {
         Animal rabbit = new Herbivore("Зайка Игорь", 10);
         Grass clover = new Grass("Трава Капуста", 0.25f);
 
-        System.out.println(wolf.GetInfo());
-        System.out.println(fox.GetInfo());
-        System.out.println(rabbit.GetInfo());
-        System.out.println(clover.GetInfo());
+        System.out.println(wolf.getInfo());
+        System.out.println(fox.getInfo());
+        System.out.println(rabbit.getInfo());
+        System.out.println(clover.getInfo());
 
         System.out.println("Заяц умирает...");
         rabbit.kill();
-        System.out.println(rabbit.GetInfo());
-    }
+        System.out.println(rabbit.getInfo());
 
+        // hunting
+        Predator foxAsHunter = (Predator)fox;
+
+        try{
+            foxAsHunter.seeFood(clover); // пытаемся покормить не своей едой (4)
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+        try {
+            foxAsHunter.seeFood(rabbit); // пытаемся покормить хищника мертвым животным (5)
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+
+        fox.kill();
+        try {
+            fox.kill();    // пытаемся убить мертвое в kill (1)
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
+        try {
+            fox.seeFood(wolf); // пытаемся покормить мертвое животное (3)
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
+
+
+        try {
+            Food unrealFox = new Predator("Unreal fox", -3.5f); // пытаемся создать животное (наследник Food) с отрицательной массой (2)
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+    }
 }

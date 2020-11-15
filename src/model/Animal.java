@@ -9,41 +9,17 @@ public abstract class Animal extends Food {
         this.isAlive = true;
     }
 
-    public void eat(Food food) {
-        if (this instanceof Predator && food instanceof Animal) {
-            // predator can eat any animal
-            Animal animalToEat = (Animal) food;
-            animalToEat.kill();
-            this.m += animalToEat.m / 2f;
-        } else if (this instanceof Herbivore && food instanceof Grass) {
-            // herbivore can eat only grass
-            this.m += food.m / 5f;
-        }
-    }
+    public abstract void seeFood(Food food); // former seePrey
+    protected abstract void eat(Food food);
 
-    public void kill() {
-        if (isAlive)
-            isAlive = false;
-    }
+    public void kill() throws IllegalStateException {
+        if (!isAlive)
+            throw new IllegalStateException("Cannot kill a dead animal");
+        isAlive = false;
+   }
 
-    public String GetInfo() {
+    public String getInfo() {
         return "name = " + name + " mass = " + m + " is alive: " + isAlive;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public float getM() {
-        return m;
-    }
-
-    public void setM(float m) {
-        this.m = m;
     }
 
     public boolean isAlive() {

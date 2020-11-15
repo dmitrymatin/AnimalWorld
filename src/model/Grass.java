@@ -6,23 +6,7 @@ public class Grass extends Food {
         super(name, m);
     }
 
-    public String GetInfo() {
-        return "name = " + name + " mass = " + m;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public float getM() {
-        return m;
-    }
-
-    public void setM(float m) {
-        this.m = m;
+    public String getInfo() {
+        return "Grass: " + name + " mass = " + m;
     }
 }
