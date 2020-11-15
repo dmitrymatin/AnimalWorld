@@ -14,36 +14,41 @@ public class Storage<E> {
         data.remove(element);
     }
 
-    public boolean save() {
+    public void save() {
         try {
             FileOutputStream fos = new FileOutputStream("objects.dat");
             ObjectOutputStream ous = new ObjectOutputStream(fos);
             ous.writeObject(data);
 
+            ous.close();
+            fos.close();
+
             System.out.println("successfully saved data");
-            return true;
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        return false;
     }
 
-    public boolean load() {
+    public void load() {
         try {
             FileInputStream fis = new FileInputStream("objects.dat");
             ObjectInputStream ois = new ObjectInputStream(fis);
 
             Object obj = ois.readObject();
 
-            if (obj instanceof ArrayList){
+            if (obj instanceof ArrayList) {
                 data = (ArrayList<E>) obj;
                 System.out.println("successfully loaded data");
-                return true;
             }
+
+            ois.close();
+            fis.close();
         } catch (ClassNotFoundException | IOException ex) {
             ex.printStackTrace();
         }
+    }
 
-        return false;
+    public ArrayList<E> getData() {
+        return data;
     }
 }
