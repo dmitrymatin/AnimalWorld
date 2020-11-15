@@ -1,6 +1,11 @@
 package model;
 
-public abstract class Food {
+import java.io.Serializable;
+
+public abstract class Food implements Serializable {
+    private static int objectCount = 0;
+    private final int id;
+
     protected String name;
     protected float m;
 
@@ -10,10 +15,16 @@ public abstract class Food {
                     + this.getClass().getName() + " with negative mass");
         this.name = name;
         this.m = m;
+
+        this.id = ++objectCount;
     }
 
-    public String getInfo(){
-        return "name = " + name + " mass = " + m;
+    public String getInfo() {
+        return "name = " + name + " mass = " + m + " [" + id + "]";
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {
