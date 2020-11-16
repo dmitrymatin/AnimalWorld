@@ -1,7 +1,13 @@
 package data;
 
+import model.Animal;
+import model.Herbivore;
+import model.Predator;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 public class Storage<E> {
     private ArrayList<E> data = new ArrayList<>();
@@ -14,7 +20,7 @@ public class Storage<E> {
         data.remove(element);
     }
 
-    public void save() {
+    public boolean save() {
         try {
             FileOutputStream fos = new FileOutputStream("objects.dat");
             ObjectOutputStream ous = new ObjectOutputStream(fos);
@@ -23,9 +29,10 @@ public class Storage<E> {
             ous.close();
             fos.close();
 
-            System.out.println("successfully saved data");
+            return true;
         } catch (IOException ex) {
             ex.printStackTrace();
+            return false;
         }
     }
 
@@ -50,5 +57,45 @@ public class Storage<E> {
 
     public ArrayList<E> getData() {
         return data;
+    }
+
+    public Stream<E> filter(Predicate<E> predicate) {
+        return data.stream().filter(predicate);
+    }
+
+    public ArrayList<Predator> findPredators() {
+        ArrayList<Predator> resultingCollection = new ArrayList<>();
+        Iterator<E> iterator = data.iterator();
+        while (iterator.hasNext()) {
+            E element = iterator.next();
+            if (element instanceof Predator)
+                resultingCollection.add((Predator) element);
+        }
+        return resultingCollection;
+    }
+
+    public ArrayList<Herbivore> findHerbivores() {
+        ArrayList<Herbivore> resultingCollection = new ArrayList<>();
+        Iterator<E> iterator = data.iterator();
+        while (iterator.hasNext()) {
+            E element = iterator.next();
+            if (element instanceof Herbivore)
+                resultingCollection.add((Herbivore) element);
+        }
+        return resultingCollection;
+    }
+
+    public ArrayList<Animal> findAllWithIsAlive(boolean isAliveValue) {
+        ArrayList<Animal> resultingCollection = new ArrayList<>();
+        Iterator<E> iterator = data.iterator();
+        while (iterator.hasNext()) {
+            E element = iterator.next();
+            if (element instanceof Animal) {
+                Animal animal = ((Animal) element);
+                if (animal.isAlive() == isAliveValue)
+                    resultingCollection.add(animal);
+            }
+        }
+        return resultingCollection;
     }
 }
