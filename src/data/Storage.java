@@ -1,30 +1,110 @@
 package data;
 
-import model.Animal;
+import model.Grass;
 import model.Herbivore;
 import model.Predator;
+
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
+import java.util.*;
 
-public class Storage<E> {
-    private ArrayList<E> data = new ArrayList<>();
+public class Storage {
+    private static Storage uniqueInstance = null;
 
-    public void add(E element) {
-        data.add(element);
+    private Map<Integer, Predator> predators = new HashMap<>();
+    private Map<Integer, Herbivore> herbivores = new HashMap<>();
+    private Map<Integer, Grass> grasses = new HashMap<>();
+
+    private int predatorCount = 0;
+    private int herbivoreCount = 0;
+    private int grassCount = 0;
+
+    private Storage() {
     }
 
-    public void remove(E element) {
-        data.remove(element);
+    public static Storage getInstance() {
+        if (uniqueInstance == null) {
+            uniqueInstance = new Storage();
+        }
+        return uniqueInstance;
+    }
+
+    public void addPredator(Predator predator) {
+        predators.put(++predatorCount, predator);
+    }
+
+    public void updatePredator(int id, Predator predator) {
+        predators.replace(id, predator);
+    }
+
+    public void removePredator(int id) {
+        predators.remove(id);
+    }
+
+    public void addHerbivore(Herbivore herbivore) {
+        herbivores.put(++herbivoreCount, herbivore);
+    }
+
+    public void updateHerbivore(int id, Herbivore herbivore) {
+        herbivores.replace(id, herbivore);
+    }
+
+    public void removeHerbivore(int id) {
+        herbivores.remove(id);
+    }
+
+    public void addGrass(Grass grass) {
+        grasses.put(++grassCount, grass);
+    }
+
+    public void updateGrass(int id, Grass grass){
+        grasses.replace(id, grass);
+    }
+
+    public void removeGrass(int id) {
+        grasses.remove(id);
     }
 
     public boolean save() {
+        return savePredators() & saveHerbivores() & saveGrass();
+    }
+
+    private boolean savePredators() {
         try {
-            FileOutputStream fos = new FileOutputStream("objects.dat");
+            FileOutputStream fos = new FileOutputStream("predators.dat");
             ObjectOutputStream ous = new ObjectOutputStream(fos);
-            ous.writeObject(data);
+            ous.writeObject(predators);
+
+            ous.close();
+            fos.close();
+
+            return true;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    private boolean saveHerbivores() {
+        try {
+            FileOutputStream fos = new FileOutputStream("herbivores.dat");
+            ObjectOutputStream ous = new ObjectOutputStream(fos);
+            ous.writeObject(herbivores);
+
+            ous.close();
+            fos.close();
+
+            return true;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    private boolean saveGrass() {
+        try {
+            FileOutputStream fos = new FileOutputStream("grasses.dat");
+            ObjectOutputStream ous = new ObjectOutputStream(fos);
+            ous.writeObject(grasses);
 
             ous.close();
             fos.close();
@@ -37,65 +117,83 @@ public class Storage<E> {
     }
 
     public void load() {
+        loadPredators();
+        loadHerbivores();
+        loadGrass();
+    }
+
+    private void loadPredators() {
         try {
-            FileInputStream fis = new FileInputStream("objects.dat");
+            FileInputStream fis = new FileInputStream("predators.dat");
             ObjectInputStream ois = new ObjectInputStream(fis);
 
             Object obj = ois.readObject();
 
-            if (obj instanceof ArrayList) {
-                data = (ArrayList<E>) obj;
-                System.out.println("successfully loaded data");
+            if (obj instanceof Map) {
+                predators = (Map<Integer, Predator>) obj;
+                System.out.println("successfully loaded predators");
             }
 
             ois.close();
             fis.close();
+
+            predatorCount = Collections.max(predators.keySet());
         } catch (ClassNotFoundException | IOException ex) {
             ex.printStackTrace();
         }
     }
 
-    public ArrayList<E> getData() {
-        return data;
-    }
+    private void loadHerbivores() {
+        try {
+            FileInputStream fis = new FileInputStream("herbivores.dat");
+            ObjectInputStream ois = new ObjectInputStream(fis);
 
-    public Stream<E> filter(Predicate<E> predicate) {
-        return data.stream().filter(predicate);
-    }
+            Object obj = ois.readObject();
 
-    public ArrayList<Predator> findPredators() {
-        ArrayList<Predator> resultingCollection = new ArrayList<>();
-        Iterator<E> iterator = data.iterator();
-        while (iterator.hasNext()) {
-            E element = iterator.next();
-            if (element instanceof Predator)
-                resultingCollection.add((Predator) element);
-        }
-        return resultingCollection;
-    }
-
-    public ArrayList<Herbivore> findHerbivores() {
-        ArrayList<Herbivore> resultingCollection = new ArrayList<>();
-        Iterator<E> iterator = data.iterator();
-        while (iterator.hasNext()) {
-            E element = iterator.next();
-            if (element instanceof Herbivore)
-                resultingCollection.add((Herbivore) element);
-        }
-        return resultingCollection;
-    }
-
-    public ArrayList<Animal> findAllWithIsAlive(boolean isAliveValue) {
-        ArrayList<Animal> resultingCollection = new ArrayList<>();
-        Iterator<E> iterator = data.iterator();
-        while (iterator.hasNext()) {
-            E element = iterator.next();
-            if (element instanceof Animal) {
-                Animal animal = ((Animal) element);
-                if (animal.isAlive() == isAliveValue)
-                    resultingCollection.add(animal);
+            if (obj instanceof Map) {
+                herbivores = (Map<Integer, Herbivore>) obj;
+                System.out.println("successfully loaded herbivores");
             }
+
+            ois.close();
+            fis.close();
+
+            herbivoreCount = Collections.max(herbivores.keySet());
+        } catch (ClassNotFoundException | IOException ex) {
+            ex.printStackTrace();
         }
-        return resultingCollection;
+    }
+
+    private void loadGrass() {
+        try {
+            FileInputStream fis = new FileInputStream("grasses.dat");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+
+            Object obj = ois.readObject();
+
+            if (obj instanceof ArrayList) {
+                grasses = (Map<Integer, Grass>) obj;
+                System.out.println("successfully loaded grasses");
+            }
+
+            ois.close();
+            fis.close();
+
+            grassCount = Collections.max(grasses.keySet());
+        } catch (ClassNotFoundException | IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public Map<Integer, Predator> getPredators() {
+        return predators;
+    }
+
+    public Map<Integer, Herbivore> getHerbivores() {
+        return herbivores;
+    }
+
+    public Map<Integer, Grass> getGrasses() {
+        return grasses;
     }
 }

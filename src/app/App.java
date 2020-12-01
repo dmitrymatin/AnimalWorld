@@ -53,10 +53,10 @@ public class App {
             e.printStackTrace();
         }
 
-        Storage<Food> storage = new Storage<>();
-        storage.add(fox);
-        storage.add(wolf);
-        storage.add(rabbit);
+        Storage storage = Storage.getInstance();
+        storage.addPredator((Predator) fox);
+        storage.addPredator((Predator) wolf);
+        storage.addHerbivore((Herbivore) rabbit);
         storage.save();
         storage.load();
     }
