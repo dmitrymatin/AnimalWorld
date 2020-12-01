@@ -3,28 +3,19 @@ package model;
 import java.io.Serializable;
 
 public abstract class Food implements Serializable {
-    private static int objectCount = 0;
-    private final int id;
-
     protected String name;
-    protected float m;
+    protected float mass;
 
-    protected Food(String name, float m) throws IllegalArgumentException {
-        if (m <= 0)
+    protected Food(String name, float mass) throws IllegalArgumentException {
+        if (mass <= 0)
             throw new IllegalArgumentException("Cannot create entity of type "
                     + this.getClass().getName() + " with negative mass");
         this.name = name;
-        this.m = m;
-
-        this.id = ++objectCount;
+        this.mass = mass;
     }
 
     public String getInfo() {
-        return "name = " + name + " mass = " + m + " [" + id + "]";
-    }
-
-    public int getId() {
-        return id;
+        return "name = " + name + " mass = " + mass;
     }
 
     public String getName() {
@@ -35,11 +26,11 @@ public abstract class Food implements Serializable {
         this.name = name;
     }
 
-    public float getM() {
-        return m;
+    public float getMass() {
+        return mass;
     }
 
-    public void setM(float m) {
-        this.m = m;
+    public void setMass(float mass) {
+        this.mass = mass;
     }
 }

@@ -23,9 +23,9 @@ public class Herbivore extends Animal {
     }
 
     protected void eat(Food food) {
-        float massTaken = food.m / 5f;
+        float massTaken = food.mass / 5f;
 
-        food.m -= massTaken;
-        this.m += massTaken;
+        food.mass -= massTaken;
+        this.mass += massTaken;
     }
 }
