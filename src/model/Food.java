@@ -1,19 +1,21 @@
 package model;
 
-public abstract class Food {
-    protected String name;
-    protected float m;
+import java.io.Serializable;
 
-    protected Food(String name, float m) throws IllegalArgumentException {
-        if (m <= 0)
+public abstract class Food implements Serializable {
+    protected String name;
+    protected float mass;
+
+    protected Food(String name, float mass) throws IllegalArgumentException {
+        if (mass <= 0)
             throw new IllegalArgumentException("Cannot create entity of type "
                     + this.getClass().getName() + " with negative mass");
         this.name = name;
-        this.m = m;
+        this.mass = mass;
     }
 
-    public String getInfo(){
-        return "name = " + name + " mass = " + m;
+    public String getInfo() {
+        return "name = " + name + " mass = " + mass;
     }
 
     public String getName() {
@@ -24,11 +26,11 @@ public abstract class Food {
         this.name = name;
     }
 
-    public float getM() {
-        return m;
+    public float getMass() {
+        return mass;
     }
 
-    public void setM(float m) {
-        this.m = m;
+    public void setMass(float mass) {
+        this.mass = mass;
     }
 }

@@ -19,7 +19,7 @@ public abstract class Animal extends Food {
    }
 
     public String getInfo() {
-        return "name = " + name + " mass = " + m + " is alive: " + isAlive;
+        return "name = " + name + " mass = " + mass + " is alive: " + isAlive;
     }
 
     public boolean isAlive() {

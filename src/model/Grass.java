@@ -7,6 +7,6 @@ public class Grass extends Food {
     }
 
     public String getInfo() {
-        return "Grass: " + name + " mass = " + m;
+        return "Grass: " + name + " mass = " + mass;
     }
 }

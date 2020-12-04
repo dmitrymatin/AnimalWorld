@@ -36,10 +36,10 @@ public class Predator extends Animal {
         Animal animalToEat = (Animal) food;
 
         animalToEat.kill();
-        float massTaken = animalToEat.m / 2f;
+        float massTaken = animalToEat.mass / 2f;
 
-        animalToEat.m -= massTaken;
-        this.m += massTaken;
+        animalToEat.mass -= massTaken;
+        this.mass += massTaken;
 
         System.out.println(this.name + " съедает " + animalToEat.name);
     }

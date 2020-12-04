@@ -1,4 +1,6 @@
 package app;
+
+import data.StorageManager;
 import model.*;
 
 public class App {
@@ -19,9 +21,9 @@ public class App {
         System.out.println(rabbit.getInfo());
 
         // hunting
-        Predator foxAsHunter = (Predator)fox;
+        Predator foxAsHunter = (Predator) fox;
 
-        try{
+        try {
             foxAsHunter.seeFood(clover); // пытаемся покормить не своей едой (4)
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
@@ -50,5 +52,12 @@ public class App {
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
+
+        StorageManager storageManager = StorageManager.getInstance();
+        storageManager.addFood(fox);
+        storageManager.addFood(wolf);
+        storageManager.addFood(rabbit);
+        storageManager.save();
+        storageManager.load();
     }
 }
