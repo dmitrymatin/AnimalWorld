@@ -59,7 +59,5 @@ public class App {
         storageManager.addFood(rabbit);
         storageManager.save();
         storageManager.load();
-
-        new AnimalGUI();
     }
 }
