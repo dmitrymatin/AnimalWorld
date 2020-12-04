@@ -6,7 +6,7 @@ import model.*;
 public class App {
 
     public static void main(String[] args) {
-/*        Animal wolf = new Predator("Волк Вася", 60);
+        Animal wolf = new Predator("Волк Вася", 60);
         Animal fox = new Predator("Лиса Алиса", 40);
         Animal rabbit = new Herbivore("Зайка Игорь", 10);
         Grass clover = new Grass("Трава Капуста", 0.25f);
@@ -51,14 +51,14 @@ public class App {
             Food unrealFox = new Predator("Unreal fox", -3.5f); // пытаемся создать животное (наследник Food) с отрицательной массой (2)
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-        }*/
+        }
 
-/*        StorageManager storageManager = StorageManager.getInstance();
+        StorageManager storageManager = StorageManager.getInstance();
         storageManager.addFood(fox);
         storageManager.addFood(wolf);
         storageManager.addFood(rabbit);
         storageManager.save();
-        storageManager.load();*/
+        storageManager.load();
 
         new AnimalGUI();
     }

@@ -55,7 +55,7 @@ class Storage<E> {
             ois.close();
             fis.close();
 
-            elementsCount = Collections.max(elements.keySet());
+            elementsCount = elements.keySet().size() == 0 ? 0 : Collections.max(elements.keySet());
         } catch (ClassNotFoundException | IOException ex) {
             ex.printStackTrace();
         }
