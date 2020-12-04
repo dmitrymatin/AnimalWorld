@@ -1,6 +1,6 @@
 package app;
 
-import data.Storage;
+import data.StorageManager;
 import model.*;
 
 public class App {
@@ -53,11 +53,13 @@ public class App {
             e.printStackTrace();
         }
 
-        Storage storage = Storage.getInstance();
-        storage.addPredator((Predator) fox);
-        storage.addPredator((Predator) wolf);
-        storage.addHerbivore((Herbivore) rabbit);
-        storage.save();
-        storage.load();
+        StorageManager storageManager = StorageManager.getInstance();
+        storageManager.addFood(fox);
+        storageManager.addFood(wolf);
+        storageManager.addFood(rabbit);
+        storageManager.save();
+        storageManager.load();
+
+        new AnimalGUI();
     }
 }
