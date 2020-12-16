@@ -1,7 +1,5 @@
 package data;
 
-import model.Predator;
-
 import java.io.*;
 import java.util.Collections;
 import java.util.HashMap;

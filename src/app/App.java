@@ -53,11 +53,13 @@ public class App {
             e.printStackTrace();
         }
 
-        StorageManager storageManager = StorageManager.getInstance();
-        storageManager.addFood(fox);
-        storageManager.addFood(wolf);
-        storageManager.addFood(rabbit);
-        storageManager.save();
-        storageManager.load();
+//        StorageManager storageManager = StorageManager.getInstance();
+//        storageManager.addFood(fox);
+//        storageManager.addFood(wolf);
+//        storageManager.addFood(rabbit);
+//        storageManager.save();
+//        storageManager.load();
+
+        new ServerGUI("Сервер");
     }
 }
