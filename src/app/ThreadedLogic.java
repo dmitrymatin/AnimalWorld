@@ -16,6 +16,11 @@ public class ThreadedLogic implements Runnable {
         try {
             heavyComputation();
 
+            // todo: для сессий добавить беск. цикл
+
+            // ~ NetListener
+            // распарсить запрос, general controller.dosmth(...)
+
             data = new Random().nextInt();
             socket.getOutputStream().write(data);
             System.out.println("В OutputStream клиентского сокета записано: " + data);

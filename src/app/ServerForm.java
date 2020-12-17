@@ -64,6 +64,7 @@ public class ServerForm extends Frame {
     }
 
     public void onStartServer() {
+        loggingTextArea.setText("");
         startServerButton.setEnabled(false);
         stopServerButton.setEnabled(true);
         exitButton.setEnabled(false);
@@ -83,7 +84,7 @@ public class ServerForm extends Frame {
         dispose();
     }
 
-    public void logMessage(String message) {
+    public void logMessageToForm(String message) {
         loggingTextArea.setText(message);
     }
 
@@ -104,4 +105,7 @@ public class ServerForm extends Frame {
         return portTextField;
     }
 
+    public TextArea getTextArea() {
+        return loggingTextArea;
+    }
 }

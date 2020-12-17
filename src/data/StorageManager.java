@@ -64,8 +64,8 @@ public class StorageManager {
             predatorStorage.loadElements(PREDATORS_FILENAME);
             herbivoreStorage.loadElements(HERBIVORES_FILENAME);
             grassStorage.loadElements(GRASSES_FILENAME);
-        } catch (IOException | ClassNotFoundException ex) {
-            throw new Exception("could not load data from file\n" + ex.getMessage());
+        } catch (IllegalAccessException ex) {
+            throw new Exception("could not load data \n" + ex.getMessage());
         }
     }
 

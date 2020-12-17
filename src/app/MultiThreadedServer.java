@@ -8,13 +8,13 @@ import java.util.ArrayList;
 public class MultiThreadedServer {
     private static MultiThreadedServer uniqueInstance = null;
 
-    private int port;
     private boolean listen = false;
+    private Logger logger = null;
 
     private ServerSocket serverSocket = null;
     ArrayList<ThreadedLogic> sessions = new ArrayList<>();
 
-    public static MultiThreadedServer getInstance(){
+    public static MultiThreadedServer getInstance() {
         if (uniqueInstance == null) {
             uniqueInstance = new MultiThreadedServer();
         }
@@ -22,32 +22,48 @@ public class MultiThreadedServer {
         return uniqueInstance;
     }
 
-    private MultiThreadedServer() { }
+    private MultiThreadedServer() {
+    }
 
-    public void launch(int port) throws IOException {
+    public void launch(int port, Logger logger) throws Exception {
+        if (listen)
+            throw new Exception("server has already been started");
+
+        this.logger = logger;
+
         try {
             serverSocket = new ServerSocket(port);
-            System.out.println("Создан ServerSocket, port: " + port);
+
+            logger.logMessage("created ServerSocket, port: " + port);
+            //System.out.println("Создан ServerSocket, port: " + port);
         } catch (IOException e) {
-            throw e;
+            throw new Exception("Error occurred while trying to launch server", e);
         }
 
+        startListening(port);
+    }
+
+    private void startListening(int port) throws IOException {
         listen = true;
         try {
             while (listen) {
+                logger.logMessage("ServerSocket waiting for incoming requests on port " + port);
+                //System.out.println("\nВ цикле ServerSocket ожидает входящие запросы от клиентов на порт " + port);
+
                 Socket socket = serverSocket.accept();
-                System.out.println("\nВ цикле ServerSocket ожидает входящие запросы от клиентов на порт " + port);
 
                 ThreadedLogic threadedLogic = new ThreadedLogic(socket);
                 sessions.add(threadedLogic);
-                System.out.println("Создан экземпляр класса ThreadedLogic");
+
+                logger.logMessage("ThreadedLogic instance created");
+                //System.out.println("Создан экземпляр класса ThreadedLogic");
 
                 Thread thread = new Thread(threadedLogic);
                 thread.start();
-                System.out.println("Сервер создал новый поток");
+
+                logger.logMessage("Server created new thread");
+                //System.out.println("Сервер создал новый поток");
             }
-
-
         } catch (IOException e) {
             listen = false;
             throw e;
@@ -56,14 +72,18 @@ public class MultiThreadedServer {
 
     public void stop() {
         try {
-            for (ThreadedLogic s: sessions) {
+            for (ThreadedLogic s : sessions) {
                 s.getSocket().close();
-                System.out.println("Закрыт клиентский сокет на стороне сервера\n");
+
+                logger.logMessage("server closed client socket");
+                //System.out.println("Закрыт клиентский сокет на стороне сервера\n");
             }
 
             serverSocket.close();
             listen = false;
-            System.out.println("Закрыт серверный сокет (ServerSocket)");
+
+            logger.logMessage("ServerSocket closed");
+            //System.out.println("Закрыт серверный сокет (ServerSocket)");
         } catch (IOException e) {
             e.printStackTrace();
         }

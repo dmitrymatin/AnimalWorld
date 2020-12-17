@@ -11,6 +11,6 @@ public class FormLogger implements Logger {
     }
 
     public void logMessage(String message) {
-        textArea.setText("\n" + message);
+        textArea.append("\n" + message);
     }
 }
