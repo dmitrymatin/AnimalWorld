@@ -2,7 +2,7 @@ package app;
 
 import java.awt.*;
 
-public class ServerGUI extends Frame {
+public class ServerForm extends Frame {
     // server control part
     Panel controlPanel = new Panel();
     Label portLabel = new Label("Порт");
@@ -15,7 +15,7 @@ public class ServerGUI extends Frame {
     Panel loggingPanel = new Panel();
     TextArea loggingTextArea = new TextArea();
 
-    public ServerGUI(String title) throws HeadlessException {
+    public ServerForm(String title) throws HeadlessException {
         super(title);
 
         setSize(560, 380);
@@ -26,7 +26,6 @@ public class ServerGUI extends Frame {
 
         setVisible(true);
     }
-
 
     private void initialiseControlPart() {
         controlPanel.setBounds(30, 30, 500, 90);
@@ -70,6 +69,39 @@ public class ServerGUI extends Frame {
         exitButton.setEnabled(false);
 
         portTextField.setEditable(false);
-
     }
+
+    public void onStopServer() {
+        startServerButton.setEnabled(true);
+        stopServerButton.setEnabled(false);
+        exitButton.setEnabled(true);
+
+        portTextField.setEditable(true);
+    }
+
+    public void onExit() {
+        dispose();
+    }
+
+    public void logMessage(String message) {
+        loggingTextArea.setText(message);
+    }
+
+
+    public Button getStartServerButton() {
+        return startServerButton;
+    }
+
+    public Button getStopServerButton() {
+        return stopServerButton;
+    }
+
+    public Button getExitButton() {
+        return exitButton;
+    }
+
+    public TextField getPortTextField() {
+        return portTextField;
+    }
+
 }

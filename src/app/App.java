@@ -1,6 +1,5 @@
 package app;
 
-import data.StorageManager;
 import model.*;
 
 public class App {
@@ -60,6 +59,6 @@ public class App {
 //        storageManager.save();
 //        storageManager.load();
 
-        new ServerGUI("Сервер");
+        new ServerForm("Сервер");
     }
 }
