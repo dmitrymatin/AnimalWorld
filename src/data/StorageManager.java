@@ -2,6 +2,7 @@ package data;
 
 import model.*;
 
+import java.io.IOException;
 import java.util.*;
 
 public class StorageManager {
@@ -58,10 +59,14 @@ public class StorageManager {
                 & grassStorage.saveElements(GRASSES_FILENAME);
     }
 
-    public void load() {
-        predatorStorage.loadElements(PREDATORS_FILENAME);
-        herbivoreStorage.loadElements(HERBIVORES_FILENAME);
-        grassStorage.loadElements(GRASSES_FILENAME);
+    public void load() throws Exception {
+        try {
+            predatorStorage.loadElements(PREDATORS_FILENAME);
+            herbivoreStorage.loadElements(HERBIVORES_FILENAME);
+            grassStorage.loadElements(GRASSES_FILENAME);
+        } catch (IOException | ClassNotFoundException ex) {
+            throw new Exception("could not load data from file\n" + ex.getMessage());
+        }
     }
 
     public Map<Integer, Predator> getPredators() {

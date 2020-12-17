@@ -14,7 +14,7 @@ public class MultiThreadedServer {
     private ServerSocket serverSocket = null;
     ArrayList<ThreadedLogic> sessions = new ArrayList<>();
 
-    public static MultiThreadedServer getUniqueInstance(){
+    public static MultiThreadedServer getInstance(){
         if (uniqueInstance == null) {
             uniqueInstance = new MultiThreadedServer();
         }

@@ -38,7 +38,7 @@ class Storage<E> {
         }
     }
 
-    public void loadElements(String fileName) {
+    public void loadElements(String fileName) throws IOException, ClassNotFoundException {
         try {
             FileInputStream fis = new FileInputStream(fileName);
             ObjectInputStream ois = new ObjectInputStream(fis);
@@ -55,7 +55,7 @@ class Storage<E> {
 
             elementsCount = elements.keySet().size() == 0 ? 0 : Collections.max(elements.keySet());
         } catch (ClassNotFoundException | IOException ex) {
-            ex.printStackTrace();
+            throw ex;
         }
     }
 

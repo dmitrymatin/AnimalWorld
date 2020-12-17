@@ -5,15 +5,27 @@ import data.StorageManager;
 import java.io.IOException;
 
 public class GeneralController {
-    private static MultiThreadedServer server = MultiThreadedServer.getUniqueInstance();
-    private static StorageManager storageManager = StorageManager.getInstance();
+    private static final StorageManager storageManager = StorageManager.getInstance();
+    private static final MultiThreadedServer server = MultiThreadedServer.getInstance();
+    private static ServerForm serverForm = null;
+    private static ServerFormListener serverFormListener = null;
+
+    public static void startApp() {
+        try {
+            storageManager.load();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        serverForm = new ServerForm("Сервер");
+        serverFormListener = new ServerFormListener(serverForm);
+    }
 
     public static boolean startServer(int port) {
-        try{
+        try {
             server.launch(port);
             return true;
-        }
-        catch (IOException exception){
+        } catch (IOException exception) {
             return false;
         }
     }
