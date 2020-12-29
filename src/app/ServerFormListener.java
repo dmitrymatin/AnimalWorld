@@ -20,9 +20,9 @@ public class ServerFormListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == form.getStartServerButton()) {
             onStart();
-        } else if (e.getSource() == form.getStopServerButton()) { // todo: refactor the same way as this.onStart(). DONE
+        } else if (e.getSource() == form.getStopServerButton()) {
             onStop();
-        } else if (e.getSource() == form.getExitButton()) { // todo: refactor the same way as this.onStart(). DONE
+        } else if (e.getSource() == form.getExitButton()) {
             onExit();
         }
     }
@@ -43,7 +43,7 @@ public class ServerFormListener implements ActionListener {
                 throw new IllegalArgumentException("введен неверный порт");
             }
 
-            GeneralController.startServer(port);
+            GeneralController.startServer(port); // this won't throw exceptions because of multithreading inside startServer()
             this.form.onStartServer();
             this.logger.logMessage("Сервер успешно запущен");
 

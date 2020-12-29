@@ -31,23 +31,22 @@ public class GeneralController {
         Runnable runnableServerLauncher = new Runnable() {
             public void run() {
                 try {
-                    logger.logMessage("-------");
+                    logger.logMessage("-------");// TODO: EDT
                     server.launch(port, logger);
-                    logger.logMessage("-------");
+                    logger.logMessage("-------");// TODO: EDT
                 } catch (Exception e) {
-                    logger.logMessage(e.getMessage());
+                    logger.logMessage(e.getMessage());// TODO: EDT
                     server.stop();
                 }
             }
         };
         Thread serverLauncherThread = new Thread(runnableServerLauncher);
         serverLauncherThread.start();
-
-        // todo: notify if server has been stopped
     }
 
     public static void stopServer() {
         server.stop();
+        logger.logMessage("сервер остановлен"); //TODO: EDT
     }
 
     public static void persistData() {

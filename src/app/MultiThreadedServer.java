@@ -12,7 +12,7 @@ public class MultiThreadedServer {
     private Logger logger = null;
 
     private ServerSocket serverSocket = null;
-    ArrayList<ThreadedLogic> sessions = new ArrayList<>();
+    ArrayList<Session> sessions = new ArrayList<>();
 
     public static MultiThreadedServer getInstance() {
         if (uniqueInstance == null) {
@@ -34,7 +34,7 @@ public class MultiThreadedServer {
         try {
             serverSocket = new ServerSocket(port);
 
-            logger.logMessage("created ServerSocket, port: " + port);
+            logger.logMessage("created ServerSocket, port: " + port); // TODO: EDT
             //System.out.println("Создан ServerSocket, port: " + port);
         } catch (IOException e) {
             throw new Exception("Error occurred while trying to launch server", e);
@@ -47,21 +47,21 @@ public class MultiThreadedServer {
         listen = true;
         try {
             while (listen) {
-                logger.logMessage("ServerSocket waiting for incoming requests on port " + port);
+                logger.logMessage("ServerSocket waiting for incoming requests on port " + port); // TODO: EDT
                 //System.out.println("\nВ цикле ServerSocket ожидает входящие запросы от клиентов на порт " + port);
 
                 Socket socket = serverSocket.accept();
 
-                ThreadedLogic threadedLogic = new ThreadedLogic(socket);
+                Session threadedLogic = new Session(socket, logger);
                 sessions.add(threadedLogic);
 
-                logger.logMessage("ThreadedLogic instance created");
+                logger.logMessage("ThreadedLogic instance created"); // TODO: EDT
                 //System.out.println("Создан экземпляр класса ThreadedLogic");
 
                 Thread thread = new Thread(threadedLogic);
                 thread.start();
 
-                logger.logMessage("Server created new thread");
+                logger.logMessage("Server created new thread"); // TODO: EDT
                 //System.out.println("Сервер создал новый поток");
             }
         } catch (IOException e) {
@@ -72,17 +72,17 @@ public class MultiThreadedServer {
 
     public void stop() {
         try {
-            for (ThreadedLogic s : sessions) {
-                s.getSocket().close();
+            for (Session s : sessions) {
+                s.getClientSocket().close();
 
-                logger.logMessage("server closed client socket");
+                logger.logMessage("server closed client socket"); // TODO: EDT
                 //System.out.println("Закрыт клиентский сокет на стороне сервера\n");
             }
 
             serverSocket.close();
             listen = false;
 
-            logger.logMessage("ServerSocket closed");
+            logger.logMessage("ServerSocket closed"); // TODO: EDT
             //System.out.println("Закрыт серверный сокет (ServerSocket)");
         } catch (IOException e) {
             e.printStackTrace();
