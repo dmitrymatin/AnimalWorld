@@ -63,16 +63,16 @@ public class MultiThreadedServer {
 
                 Socket socket = serverSocket.accept();
 
-                Session threadedLogic = new Session(socket, logger);
-                sessions.add(threadedLogic);
+                Session session = new Session(socket, logger);
+                sessions.add(session);
 
-                logger.logMessage("ThreadedLogic instance created"); // TODO: EDT
-                //System.out.println("Создан экземпляр класса ThreadedLogic");
+                logger.logMessage("Session instance created " + session.hashCode()); // TODO: EDT
+                //System.out.println("Создан экземпляр класса Session");
 
-                Thread thread = new Thread(threadedLogic);
+                Thread thread = new Thread(session);
                 thread.start();
 
-                logger.logMessage("Server created new thread"); // TODO: EDT
+                logger.logMessage("Server created new thread" + thread.getName()); // TODO: EDT
                 //System.out.println("Сервер создал новый поток");
             }
         } catch (IOException e) {

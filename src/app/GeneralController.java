@@ -45,6 +45,7 @@ public class GeneralController {
     }
 
     public static void persistData() {
+        logger.logMessage("сохранение данных ...");
         storageManager.save();
     }
 }
