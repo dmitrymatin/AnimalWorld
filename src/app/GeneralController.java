@@ -28,26 +28,20 @@ public class GeneralController {
         logger.logMessage(startStatus);
     }
 
-    public static void startServer(int port) /*throws Exception*/ {
-        Runnable runnableServerLauncher = new Runnable() {
-            public void run() {
-                try {
-                    logger.logMessage("-------");// TODO: EDT
-                    server.launch(port, logger);
-                    logger.logMessage("-------");// TODO: EDT
-                } catch (Exception e) {
-                    logger.logMessage(e.getMessage());// TODO: EDT
-                    server.stop();
-                }
-            }
-        };
-        Thread serverLauncherThread = new Thread(runnableServerLauncher);
-        serverLauncherThread.start();
+    public static void startServer(int port) {
+        try {
+            logger.logMessage("-------");
+            server.launch(port, logger);
+            logger.logMessage("-------");
+        } catch (Exception e) {
+            logger.logMessage(e.getMessage());
+            server.stop();
+        }
     }
 
     public static void stopServer() {
         server.stop();
-        logger.logMessage("сервер остановлен " + LocalDateTime.now()); //TODO: EDT
+        logger.logMessage("сервер остановлен " + LocalDateTime.now());
     }
 
     public static void persistData() {

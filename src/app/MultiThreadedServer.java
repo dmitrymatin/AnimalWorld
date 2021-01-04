@@ -34,13 +34,24 @@ public class MultiThreadedServer {
         try {
             serverSocket = new ServerSocket(port);
 
-            logger.logMessage("created ServerSocket, port: " + port); // TODO: EDT
+            logger.logMessage("created ServerSocket, port: " + port);
             //System.out.println("Создан ServerSocket, port: " + port);
         } catch (IOException e) {
             throw new Exception("Error occurred while trying to launch server", e);
         }
 
-        startListening(port);
+        Runnable runnableServerLauncher = new Runnable() {
+            public void run() {
+                try {
+                    startListening(port);
+                } catch (Exception e) {
+                    logger.logMessage("Произошла ошибка во время работы сервера: " + e.getMessage());// TODO: EDT
+                    stop();
+                }
+            }
+        };
+        Thread serverLauncherThread = new Thread(runnableServerLauncher);
+        serverLauncherThread.start();
     }
 
     private void startListening(int port) throws IOException {
