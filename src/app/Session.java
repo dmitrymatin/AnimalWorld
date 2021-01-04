@@ -18,12 +18,6 @@ public class Session implements Runnable {
 
     public void run() {
         try {
-            //heavyComputation();
-
-            // todo: для сессий добавить беск. цикл
-//            out = new PrintWriter(clientSocket.getOutputStream(), true);
-//            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-
             out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
@@ -46,12 +40,6 @@ public class Session implements Runnable {
                         break;
                 }
 
-                // ~ NetListener
-                // распарсить запрос, general controller.dosmth(...)
-
-                //data = new Random().nextInt();
-                //clientSocket.getOutputStream().write(data);
-                //System.out.println("В OutputStream клиентского сокета записано: " + data);
                 logger.logMessage("responded to client " + clientSocket.toString());
             }
 
@@ -62,7 +50,7 @@ public class Session implements Runnable {
         }
     }
 
-    private void closeSession() throws IOException {
+    public void closeSession() throws IOException {
         logger.logMessage("closing session " + this.hashCode());
         in.close();
         out.close();
@@ -71,15 +59,5 @@ public class Session implements Runnable {
 
     public Socket getClientSocket() {
         return clientSocket;
-    }
-
-    private void heavyComputation() {
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("Поток " + Thread.currentThread().getName() + " закончил выполнение сложных вычислений");
     }
 }

@@ -2,7 +2,6 @@ package app;
 
 import data.StorageManager;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 
 public class GeneralController {
