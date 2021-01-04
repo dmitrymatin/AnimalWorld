@@ -64,7 +64,6 @@ public class ServerForm extends Frame {
     }
 
     public void onStartServer() {
-        loggingTextArea.setText("");
         startServerButton.setEnabled(false);
         stopServerButton.setEnabled(true);
         exitButton.setEnabled(false);

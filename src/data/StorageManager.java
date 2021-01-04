@@ -2,7 +2,6 @@ package data;
 
 import model.*;
 
-import java.io.IOException;
 import java.util.*;
 
 public class StorageManager {

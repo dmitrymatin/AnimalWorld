@@ -2,6 +2,7 @@ package app;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDateTime;
 
 public class ServerFormListener implements ActionListener {
 
@@ -45,7 +46,7 @@ public class ServerFormListener implements ActionListener {
 
             GeneralController.startServer(port); // this won't throw exceptions because of multithreading inside startServer()
             this.form.onStartServer();
-            this.logger.logMessage("Сервер успешно запущен");
+            this.logger.logMessage("Сервер успешно запущен " + LocalDateTime.now());
 
         } catch (Exception ex) {
             logger.logMessage("Произошла ошибка при запуске сервера: " + ex.getMessage()); // todo: некорректные данные на форму, DONE
@@ -55,7 +56,6 @@ public class ServerFormListener implements ActionListener {
     private void onStop() {
         GeneralController.stopServer();
         this.form.onStopServer();
-        this.logger.logMessage("Сервер остановлен");
     }
 
     private void onExit() {
