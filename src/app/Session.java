@@ -1,18 +1,15 @@
 package app;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.Random;
 
 public class Session implements Runnable {
     private final Socket clientSocket;
     private final Logger logger;
-    private PrintWriter out;
+    private BufferedWriter out;
     private BufferedReader in;
-    private int data = 50;
+    //private int data = 50;
 
     public Session(Socket clientSocket, Logger logger) {
         this.clientSocket = clientSocket;
@@ -24,24 +21,28 @@ public class Session implements Runnable {
             //heavyComputation();
 
             // todo: для сессий добавить беск. цикл
-            out = new PrintWriter(clientSocket.getOutputStream(), true);
+//            out = new PrintWriter(clientSocket.getOutputStream(), true);
+//            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
+            out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
             String inputLine;
             while ((inputLine = in.readLine()) != null) {
-                if ("stp".equals(inputLine)){
+                if ("stp".equals(inputLine)) {
                     logger.logMessage("disconnecting client"); // todo: EDT
+                    break;
                 }
 
-                switch (inputLine){
+                switch (inputLine) {
                     case "cmd1":
-                        out.print("response to cmd1");
+                        out.write("response to cmd1");
                         break;
                     case "cmd2":
-                        out.print("response to cmd2");
+                        out.write("response to cmd2");
                         break;
                     default:
-                        out.print("unknown command");
+                        out.write("unknown command");
                         break;
                 }
 
@@ -54,13 +55,18 @@ public class Session implements Runnable {
                 logger.logMessage("responded to client " + clientSocket.toString());
             }
 
-            in.close();
-            out.close();
-            clientSocket.close();
+            closeSession();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void closeSession() throws IOException {
+        logger.logMessage("closing session " + this.hashCode());
+        in.close();
+        out.close();
+        clientSocket.close();
     }
 
     public Socket getClientSocket() {
