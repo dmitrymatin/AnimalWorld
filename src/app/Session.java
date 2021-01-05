@@ -1,14 +1,16 @@
 package app;
 
+import networker.NetworkController;
+import networker.Request;
+
 import java.io.*;
 import java.net.Socket;
-import java.util.Random;
 
 public class Session implements Runnable {
     private final Socket clientSocket;
     private final Logger logger;
-    private OutputStreamWriter out;
-    private InputStreamReader in;
+    private DataOutputStream out;
+    private DataInputStream in;
 
     public Session(Socket clientSocket, Logger logger) {
         this.clientSocket = clientSocket;
@@ -17,36 +19,36 @@ public class Session implements Runnable {
 
     public void run() {
         try {
-            out = new OutputStreamWriter(clientSocket.getOutputStream());
-            in = new InputStreamReader(clientSocket.getInputStream());
-
-            DataInputStream dis = new DataInputStream(clientSocket.getInputStream());
-            DataOutputStream dos = new DataOutputStream(clientSocket.getOutputStream());
+            DataOutputStream out = new DataOutputStream(clientSocket.getOutputStream());
+            DataInputStream in = new DataInputStream(clientSocket.getInputStream());
 
             logger.logMessage("server prepared in/out streams");
 
             String inputLine;
             //out.write("вы подключены");
-            dos.writeUTF("вы подключены!");
+            out.writeUTF("вы подключены!");
             logger.logMessage("отправлено сообщение клиенту");
-            while ((inputLine = dis.readUTF()) != null) {
+            while ((inputLine = in.readUTF()) != null) {
                 logger.logMessage("server entered while loop for current session");
+
+                Request request = NetworkController.parseQueryString(inputLine);
+                NetworkController.prepareResponse(request);
 
                 if ("stp".equals(inputLine)) {
                     logger.logMessage("disconnecting client"); // todo: EDT
-                    dos.writeUTF("завершение сессии");
+                    out.writeUTF("завершение сессии");
                     break;
                 }
 
                 switch (inputLine) {
                     case "cmd1":
-                        dos.writeUTF("response to cmd1");
+                        out.writeUTF("response to cmd1");
                         break;
                     case "cmd2":
-                        dos.writeUTF("response to cmd2");
+                        out.writeUTF("response to cmd2");
                         break;
                     default:
-                        dos.writeUTF("unknown command");
+                        out.writeUTF("unknown command");
                         break;
                 }
 
