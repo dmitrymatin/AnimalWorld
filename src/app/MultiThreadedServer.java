@@ -58,12 +58,11 @@ public class MultiThreadedServer {
         try {
             while (listen) {
                 logger.logMessage("ServerSocket waiting for incoming requests on port " + port); // TODO: EDT
-
                 Socket socket = serverSocket.accept();
+                logger.logMessage("server received client request using socket @" + socket.hashCode() + " " + socket.toString());
 
                 Session session = new Session(socket, logger);
                 sessions.add(session);
-
                 logger.logMessage("Session instance created " + session.hashCode()); // TODO: EDT
 
                 Thread thread = new Thread(session);
