@@ -79,4 +79,32 @@ public class StorageManager {
     public Map<Integer, Grass> getGrasses() {
         return grassStorage.getElements();
     }
+
+    public Map<CompositeKey, Animal> getAnimals() {
+        Map<Integer, Predator> predators = getPredators();
+        Map<Integer, Herbivore> herbivores = getHerbivores();
+
+        Map<CompositeKey, Animal> animals = new HashMap<>(predators.size() + herbivores.size());
+
+        for (int key : predators.keySet()) {
+            animals.put(new CompositeKey(Foods.Predator, key), predators.get(key));
+        }
+        for (int key : herbivores.keySet()) {
+            animals.put(new CompositeKey(Foods.Herbivore, key), herbivores.get(key));
+        }
+        return animals;
+    }
+
+    public Map<CompositeKey, Food> getAll() {
+        Map<Integer, Grass> grasses = getGrasses();
+
+        Map<CompositeKey, Food> foods = new HashMap<>(getPredators().size() + getHerbivores().size() + grasses.size());
+        foods.putAll(getAnimals());
+
+        for (int key : grasses.keySet()) {
+            foods.put(new CompositeKey(Foods.Grass, key), grasses.get(key));
+        }
+
+        return foods;
+    }
 }
