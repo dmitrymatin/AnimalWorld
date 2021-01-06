@@ -80,7 +80,6 @@ public class MultiThreadedServer {
         try {
             for (Session s : sessions) {
                 s.closeSession();
-                logger.logMessage("server closed client socket"); // TODO: EDT
             }
 
             serverSocket.close();

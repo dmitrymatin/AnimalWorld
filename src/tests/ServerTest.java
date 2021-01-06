@@ -2,6 +2,10 @@ package tests;
 
 import app.Logger;
 import app.MultiThreadedServer;
+import data.StorageManager;
+import model.Grass;
+import model.Herbivore;
+import model.Predator;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -83,5 +87,49 @@ public class ServerTest {
         } finally {
             server.stop();
         }
+    }
+
+    @Test
+    void sendingProperCommandSuccessful() {
+        StorageManager storageManager = StorageManager.getInstance();
+        storageManager.addFood(new Grass("клевер", .4f));
+        storageManager.addFood(new Predator("лиса Алиса", 1.5f));
+        storageManager.addFood(new Predator("волк Вася", 2.8f));
+        storageManager.addFood(new Herbivore("заяц Петя", .8f));
+
+        try {
+            server.launch(1234, logger);
+
+            Socket socket = new Socket("localhost", 1234);
+            logger.logMessage("CLIENT using socket @" + socket.hashCode() + " " + socket.toString());
+
+            logger.logMessage("клиент должен получить сообщение");
+            DataInputStream dis = new DataInputStream(socket.getInputStream());
+            DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+
+            logger.logMessage("доступно для чтения: " + dis.available());
+            var result = dis.readUTF();
+            logger.logMessage("доступно для чтения: " + dis.available());
+            logger.logMessage("сервер прислал сообщение");
+            logger.logMessage(result);
+
+            dos.writeUTF("get?all");
+            String response = dis.readUTF();
+            logger.logMessage("сервер прислал сообщение");
+            logger.logMessage(response);
+
+            dos.writeUTF("stp");
+            response = dis.readUTF();
+            logger.logMessage("сервер прислал сообщение");
+            logger.logMessage(response);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        } finally {
+            server.stop();
+        }
+
+
     }
 }

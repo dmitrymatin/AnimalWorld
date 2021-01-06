@@ -2,6 +2,7 @@ package app;
 
 import networker.NetworkController;
 import networker.Request;
+import networker.Response;
 
 import java.io.*;
 import java.net.Socket;
@@ -19,54 +20,40 @@ public class Session implements Runnable {
 
     public void run() {
         try {
-            DataOutputStream out = new DataOutputStream(clientSocket.getOutputStream());
-            DataInputStream in = new DataInputStream(clientSocket.getInputStream());
+            out = new DataOutputStream(clientSocket.getOutputStream());
+            in = new DataInputStream(clientSocket.getInputStream());
 
             logger.logMessage("server prepared in/out streams");
 
-            String inputLine;
-            //out.write("вы подключены");
+            String inputLine = null;
             out.writeUTF("вы подключены!");
             logger.logMessage("отправлено сообщение клиенту");
-            while ((inputLine = in.readUTF()) != null) {
+            while (true) {
                 logger.logMessage("server entered while loop for current session");
+                inputLine = in.readUTF();
 
                 Request request = NetworkController.parseQueryString(inputLine);
-                NetworkController.prepareResponse(request);
+                Response response = NetworkController.prepareResponse(request);
 
-                if ("stp".equals(inputLine)) {
-                    logger.logMessage("disconnecting client"); // todo: EDT
-                    out.writeUTF("завершение сессии");
+                out.writeUTF(response.getMessage());
+                logger.logMessage("responded to client " + clientSocket.toString());
+
+                if (response.isClosureStatus()){
+                    closeSession();
                     break;
                 }
-
-                switch (inputLine) {
-                    case "cmd1":
-                        out.writeUTF("response to cmd1");
-                        break;
-                    case "cmd2":
-                        out.writeUTF("response to cmd2");
-                        break;
-                    default:
-                        out.writeUTF("unknown command");
-                        break;
-                }
-
-                logger.logMessage("responded to client " + clientSocket.toString());
             }
-
-            closeSession();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void closeSession() throws IOException {
+    void closeSession() throws IOException {
         logger.logMessage("closing session @" + this.hashCode());
         in.close();
         out.close();
         clientSocket.close();
+        // todo: a way to delete session upon completion
     }
 
     public Socket getClientSocket() {

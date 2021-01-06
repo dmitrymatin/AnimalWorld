@@ -1,5 +1,7 @@
 package data;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public class CompositeKey {
     public final Foods foodType;
     public final int key;
@@ -7,6 +9,12 @@ public class CompositeKey {
     public CompositeKey(final Foods foodType, final int key) {
         this.foodType = foodType;
         this.key = key;
+    }
+
+    @Override
+    @JsonValue
+    public String toString() {
+        return "<" + foodType.ordinal() + "," + key + ">";
     }
 
     public boolean equals (final Object O) {
