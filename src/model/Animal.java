@@ -12,7 +12,7 @@ public abstract class Animal extends Food {
         this.isAlive = true;
     }
 
-    public abstract void seeFood(Food food); // former seePrey
+    public abstract void seeFood(Food food) throws IllegalStateException, IllegalArgumentException; // former seePrey
 
     protected abstract void eat(Food food);
 

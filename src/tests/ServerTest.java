@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -34,7 +33,7 @@ public class ServerTest {
     }
 
     @Test
-    void connecting_is_successful() {
+    void connectingIsSuccessful() {
         try {
             server.launch(1234, logger);
         } catch (Exception e) {
@@ -46,15 +45,12 @@ public class ServerTest {
     }
 
     @Test
-    void sending_request_is_successful() {
+    void sendingRequestIsSuccessful() {
         try {
             server.launch(1234, logger);
 
             Socket socket = new Socket("localhost", 1234);
             logger.logMessage("CLIENT using socket @" + socket.hashCode() + " " + socket.toString());
-
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
             logger.logMessage("клиент должен получить сообщение");
             DataInputStream dis = new DataInputStream(socket.getInputStream());
@@ -113,10 +109,41 @@ public class ServerTest {
             logger.logMessage("сервер прислал сообщение");
             logger.logMessage(result);
 
+            String response;
             dos.writeUTF("get?all");
-            String response = dis.readUTF();
+            logger.logMessage("запрос на получение всей еды");
+            response = dis.readUTF();
             logger.logMessage("сервер прислал сообщение");
             logger.logMessage(response);
+
+            dos.writeUTF("get?pdt");
+            logger.logMessage("запрос на получение хищников");
+            response = dis.readUTF();
+            logger.logMessage("сервер прислал сообщение");
+            logger.logMessage(response);
+
+            dos.writeUTF("get?hbv");
+            logger.logMessage("запрос на получение травоядных");
+            response = dis.readUTF();
+            logger.logMessage("сервер прислал сообщение");
+            logger.logMessage(response);
+
+            dos.writeUTF("get?grs");
+            logger.logMessage("запрос на получение травы");
+            response = dis.readUTF();
+            logger.logMessage("сервер прислал сообщение");
+            logger.logMessage(response);
+
+            dos.writeUTF("crt?0&медведь Миша&20.5");
+            logger.logMessage("запрос на создание хищника (0)");
+            response = dis.readUTF();
+            logger.logMessage("сервер прислал сообщение");
+            logger.logMessage(response);
+
+//            dos.writeUTF("feed?");
+//            response = dis.readUTF();
+//            logger.logMessage("сервер прислал сообщение");
+//            logger.logMessage(response);
 
             dos.writeUTF("stp");
             response = dis.readUTF();

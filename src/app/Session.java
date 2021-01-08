@@ -27,12 +27,11 @@ public class Session implements Runnable {
 
     public void run() {
         try {
-            String inputLine = null;
             out.writeUTF("вы подключены!");
             logger.logMessage("отправлено сообщение клиенту");
             while (true) {
                 logger.logMessage("server entered while loop for current session");
-                inputLine = in.readUTF();
+                String inputLine = in.readUTF();
 
                 Request request = NetworkController.parseQueryString(inputLine);
                 Response response = NetworkController.prepareResponse(request);

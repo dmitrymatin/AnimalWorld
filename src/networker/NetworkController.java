@@ -5,6 +5,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import data.CompositeKey;
 import model.Food;
+import model.Grass;
+import model.Herbivore;
+import model.Predator;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,12 +34,14 @@ public class NetworkController {
         return request;
     }
 
-    public static Response prepareResponse(Request request) throws IOException {
+    public static Response prepareResponse(Request request) {
         ArrayList<String> args = request.getArgs();
         switch (request.getCommand()) {
             case "get":
                 // getting
                 if (args.size() > 0) {
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    String jsonString;
                     switch (args.get(0)) {
                         case "all":
                             Map<CompositeKey, Food> allFoods = GeneralController.getAllFoods();
@@ -45,10 +50,33 @@ public class NetworkController {
 //                                responseString += compositeKey.foodType + "&" + compositeKey.key + "&" + allFoods.get(compositeKey).getInfo();
 //                            }
 
-                            ObjectMapper objectMapper = new ObjectMapper();
-                            String jsonString;
                             try {
                                 jsonString = objectMapper.writeValueAsString(allFoods);
+                                return new Response(false, jsonString);
+                            } catch (JsonProcessingException e) {
+                                break;
+                            }
+                        case "pdt":
+                            Map<Integer, Predator> predators = GeneralController.getPredators();
+
+                            try {
+                                jsonString = objectMapper.writeValueAsString(predators);
+                                return new Response(false, jsonString);
+                            } catch (JsonProcessingException e) {
+                                break;
+                            }
+                        case "hbv":
+                            Map<Integer, Herbivore> herbivores = GeneralController.getHerbivores();
+                            try {
+                                jsonString = objectMapper.writeValueAsString(herbivores);
+                                return new Response(false, jsonString);
+                            } catch (JsonProcessingException e) {
+                                break;
+                            }
+                        case "grs":
+                            Map<Integer, Grass> grasses = GeneralController.getGrasses();
+                            try {
+                                jsonString = objectMapper.writeValueAsString(grasses);
                                 return new Response(false, jsonString);
                             } catch (JsonProcessingException e) {
                                 break;
@@ -59,16 +87,16 @@ public class NetworkController {
             case "crt":
                 // creating
                 if (args.size() > 2) {
-                    try {
-                        GeneralController.createFood(args.get(0), args.get(1), args.get(2));
-                        return new Response(false, "еда успешно создана");
-                    } catch (IllegalArgumentException ex) {
-                        return new Response(false, "еда не была создана: переданы неверные параметры");
-                    }
+                    String status = GeneralController.createFood(args.get(0), args.get(1), args.get(2));
+                    return new Response(false, status);
                 }
                 break;
             case "feed":
                 // feeding
+                if (args.size() > 3) {
+                    String feedStatus = GeneralController.feed(args.get(0), args.get(1), args.get(2), args.get(3));
+                    return new Response(false, feedStatus);
+                }
                 break;
 
             case "stp":

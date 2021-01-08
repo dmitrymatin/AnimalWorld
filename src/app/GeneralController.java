@@ -3,10 +3,7 @@ package app;
 import data.CompositeKey;
 import data.FoodTypes;
 import data.StorageManager;
-import model.Food;
-import model.Grass;
-import model.Herbivore;
-import model.Predator;
+import model.*;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -59,18 +56,14 @@ public class GeneralController {
         storageManager.save();
     }
 
-    public static void createFood(String foodTypeString, String name, String mass) throws IllegalArgumentException {
+    public static String createFood(String foodTypeString, String name, String mass) {
+        String creationStatus;
         try {
             int foodTypeInt = Integer.parseInt(foodTypeString);
             float massFloat = Float.parseFloat(mass);
-            FoodTypes foodType;
-            Food food = null;
+            FoodTypes foodType = FoodTypes.parseFoodType(foodTypeInt);
 
-            if (foodTypeInt < FoodTypes.values().length) {
-                foodType = FoodTypes.values()[foodTypeInt];
-            } else {
-                throw new IllegalArgumentException("food type was out of range");
-            }
+            Food food = null;
 
             switch (foodType) {
                 case Predator:
@@ -84,8 +77,54 @@ public class GeneralController {
                     break;
             }
             storageManager.addFood(food);
-        } catch (NumberFormatException ex) {
-            throw new IllegalArgumentException("Could not parse number from string", ex);
+            creationStatus = "еда успешно создана";
+        } catch (Exception ex) {
+            creationStatus = "еда не была создана: переданы неверные параметры";
         }
+        return creationStatus;
+    }
+
+    public static String feed(String feedFoodTypeString, String animalIdString, String preyFoodTypeString, String foodIdString) {
+        String feedStatus = "не удалось покормить животное: ";
+        int feedFoodTypeInt;
+        int animalId;
+        int preyFoodTypeInt;
+        int foodId;
+        try {
+            feedFoodTypeInt = Integer.parseInt(feedFoodTypeString);
+            animalId = Integer.parseInt(animalIdString);
+            preyFoodTypeInt = Integer.parseInt(preyFoodTypeString);
+            foodId = Integer.parseInt(foodIdString);
+        } catch (NumberFormatException e) {
+            feedStatus += "переданы неверные параметры";
+            return feedStatus;
+        }
+
+        FoodTypes feedFoodType = FoodTypes.parseFoodType(feedFoodTypeInt);
+        FoodTypes preyFoodType = FoodTypes.parseFoodType(preyFoodTypeInt);
+
+        Animal animalToFeed = storageManager.getAnimals().get(new CompositeKey(feedFoodType, animalId));
+        Food prey = storageManager.getAll().get(new CompositeKey(preyFoodType, foodId));
+        if (animalToFeed != null) {
+            try {
+                animalToFeed.seeFood(prey);
+                feedStatus = "животное успешно покормлено";
+            } catch (IllegalStateException | IllegalArgumentException e) {
+                feedStatus += e.getMessage();
+            }
+        }
+        return feedStatus;
+    }
+
+    public static Map<Integer, Predator> getPredators() {
+        return storageManager.getPredators();
+    }
+
+    public static Map<Integer, Herbivore> getHerbivores() {
+        return storageManager.getHerbivores();
+    }
+
+    public static Map<Integer, Grass> getGrasses() {
+        return storageManager.getGrasses();
     }
 }
