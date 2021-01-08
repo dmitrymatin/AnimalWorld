@@ -87,10 +87,10 @@ public class StorageManager {
         Map<CompositeKey, Animal> animals = new HashMap<>(predators.size() + herbivores.size());
 
         for (int key : predators.keySet()) {
-            animals.put(new CompositeKey(Foods.Predator, key), predators.get(key));
+            animals.put(new CompositeKey(FoodTypes.Predator, key), predators.get(key));
         }
         for (int key : herbivores.keySet()) {
-            animals.put(new CompositeKey(Foods.Herbivore, key), herbivores.get(key));
+            animals.put(new CompositeKey(FoodTypes.Herbivore, key), herbivores.get(key));
         }
         return animals;
     }
@@ -102,7 +102,7 @@ public class StorageManager {
         foods.putAll(getAnimals());
 
         for (int key : grasses.keySet()) {
-            foods.put(new CompositeKey(Foods.Grass, key), grasses.get(key));
+            foods.put(new CompositeKey(FoodTypes.Grass, key), grasses.get(key));
         }
 
         return foods;

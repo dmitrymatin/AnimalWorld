@@ -1,7 +1,7 @@
 package app;
 
 import data.CompositeKey;
-import data.Foods;
+import data.FoodTypes;
 import data.StorageManager;
 import model.Food;
 import model.Grass;
@@ -63,11 +63,11 @@ public class GeneralController {
         try {
             int foodTypeInt = Integer.parseInt(foodTypeString);
             float massFloat = Float.parseFloat(mass);
-            Foods foodType;
+            FoodTypes foodType;
             Food food = null;
 
-            if (foodTypeInt < Foods.values().length) {
-                foodType = Foods.values()[foodTypeInt];
+            if (foodTypeInt < FoodTypes.values().length) {
+                foodType = FoodTypes.values()[foodTypeInt];
             } else {
                 throw new IllegalArgumentException("food type was out of range");
             }

@@ -1,6 +1,6 @@
 package data;
 
-public enum Foods {
+public enum FoodTypes {
     Predator,
     Herbivore,
     Grass;

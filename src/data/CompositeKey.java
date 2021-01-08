@@ -3,10 +3,10 @@ package data;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public class CompositeKey {
-    public final Foods foodType;
+    public final FoodTypes foodType;
     public final int key;
 
-    public CompositeKey(final Foods foodType, final int key) {
+    public CompositeKey(final FoodTypes foodType, final int key) {
         this.foodType = foodType;
         this.key = key;
     }
