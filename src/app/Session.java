@@ -16,15 +16,17 @@ public class Session implements Runnable {
     public Session(Socket clientSocket, Logger logger) {
         this.clientSocket = clientSocket;
         this.logger = logger;
+        try {
+            out = new DataOutputStream(this.clientSocket.getOutputStream());
+            in = new DataInputStream(this.clientSocket.getInputStream());
+            this.logger.logMessage("server prepared in/out streams");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void run() {
         try {
-            out = new DataOutputStream(clientSocket.getOutputStream());
-            in = new DataInputStream(clientSocket.getInputStream());
-
-            logger.logMessage("server prepared in/out streams");
-
             String inputLine = null;
             out.writeUTF("вы подключены!");
             logger.logMessage("отправлено сообщение клиенту");
@@ -38,7 +40,7 @@ public class Session implements Runnable {
                 out.writeUTF(response.getMessage());
                 logger.logMessage("responded to client " + clientSocket.toString());
 
-                if (response.isClosureStatus()){
+                if (response.isClosureStatus()) {
                     closeSession();
                     break;
                 }

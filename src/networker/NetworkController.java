@@ -39,8 +39,8 @@ public class NetworkController {
                 if (args.size() > 0) {
                     switch (args.get(0)) {
                         case "all":
-                            String responseString = "";
                             Map<CompositeKey, Food> allFoods = GeneralController.getAllFoods();
+//                            String responseString = "";
 //                            for (CompositeKey compositeKey : allFoods.keySet()){
 //                                responseString += compositeKey.foodType + "&" + compositeKey.key + "&" + allFoods.get(compositeKey).getInfo();
 //                            }
@@ -49,21 +49,21 @@ public class NetworkController {
                             String jsonString;
                             try {
                                 jsonString = objectMapper.writeValueAsString(allFoods);
+                                return new Response(false, jsonString);
                             } catch (JsonProcessingException e) {
-                                jsonString = "";
+                                break;
                             }
-                            return new Response(false, jsonString);
                     }
                 }
                 break;
             case "crt":
                 // creating
-                if (args.size() >= 3) {
+                if (args.size() > 2) {
                     try {
                         GeneralController.createFood(args.get(0), args.get(1), args.get(2));
                         return new Response(false, "еда успешно создана");
                     } catch (IllegalArgumentException ex) {
-                        return new Response(false, "еды не была создана: переданы неверные параметры");
+                        return new Response(false, "еда не была создана: переданы неверные параметры");
                     }
                 }
                 break;
@@ -76,6 +76,6 @@ public class NetworkController {
             default:
                 return new Response(false, "несуществующая операция");
         }
-        return null;
+        return new Response(false, "");
     }
 }
