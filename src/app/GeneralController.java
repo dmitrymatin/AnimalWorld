@@ -107,8 +107,11 @@ public class GeneralController {
         Food prey = storageManager.getAll().get(new CompositeKey(preyFoodType, foodId));
         if (animalToFeed != null) {
             try {
-                animalToFeed.seeFood(prey);
-                feedStatus = "животное успешно покормлено";
+                boolean preyEaten = animalToFeed.seeFood(prey);
+                if (preyEaten)
+                    feedStatus = "животное успешно покормлено";
+                else
+                    feedStatus = "животному не съело добычу";
             } catch (IllegalStateException | IllegalArgumentException e) {
                 feedStatus += e.getMessage();
             }

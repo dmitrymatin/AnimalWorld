@@ -8,9 +8,12 @@ public class Herbivore extends Animal {
         super(name, m);
     }
 
-    public void seeFood(Food food) throws IllegalStateException, IllegalArgumentException {
+    public boolean seeFood(Food food) throws IllegalStateException, IllegalArgumentException {
         if (!this.isAlive)
             throw new IllegalStateException("Cannot perform actions on dead herbivore");
+
+        if (food == null)
+            throw new IllegalArgumentException("Food not specified");
 
         if (!(food instanceof Grass))
             throw new IllegalArgumentException("Herbivore can only view grass as food");
@@ -19,7 +22,9 @@ public class Herbivore extends Animal {
         if (gotHungry) {
             Grass grassToEat = (Grass) food;
             eat(grassToEat);
+            return true;
         }
+        return false;
     }
 
     protected void eat(Food food) {
