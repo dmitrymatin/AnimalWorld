@@ -9,31 +9,10 @@ import model.Grass;
 import model.Herbivore;
 import model.Predator;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
 public class NetworkController {
-    public static Request parseQueryString(String queryString) {
-        Request request = null;
-
-        // query format ::= <command>?[<arg1>][&<arg2>]...[&<argN>]
-        String command;
-        String argsString;
-
-        String[] queryParts = queryString.split("\\?");
-        String[] args = null;
-        if (queryParts.length > 0) {
-            command = queryParts[0];
-            if (queryParts.length > 1) {
-                argsString = queryParts[1];
-                args = argsString.split("&");
-            }
-            request = new Request(command, args);
-        }
-        return request;
-    }
-
     public static Response prepareResponse(Request request) {
         ArrayList<String> args = request.getArgs();
         switch (request.getCommand()) {

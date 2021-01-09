@@ -111,7 +111,7 @@ public class GeneralController {
                 if (preyEaten)
                     feedStatus = "животное успешно покормлено";
                 else
-                    feedStatus = "животному не съело добычу";
+                    feedStatus = "животное не съело добычу";
             } catch (IllegalStateException | IllegalArgumentException e) {
                 feedStatus += e.getMessage();
             }

@@ -33,7 +33,7 @@ public class Session implements Runnable {
                 logger.logMessage("server entered while loop for current session");
                 String inputLine = in.readUTF();
 
-                Request request = NetworkController.parseQueryString(inputLine);
+                Request request = Request.parseRequest(inputLine);/* NetworkController.parseQueryString(inputLine);*/
                 Response response = NetworkController.prepareResponse(request);
 
                 out.writeUTF(response.getMessage());
