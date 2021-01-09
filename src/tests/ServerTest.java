@@ -6,6 +6,7 @@ import data.StorageManager;
 import model.Grass;
 import model.Herbivore;
 import model.Predator;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -16,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ServerTest {
     private static MultiThreadedServer server = MultiThreadedServer.getInstance();
+    private static StorageManager storageManager = StorageManager.getInstance();
     private static Logger logger = null;
 
     @BeforeAll
@@ -30,25 +32,35 @@ public class ServerTest {
             public void clearLog() {
             }
         };
+
+        initialiseData();
+        initialiseServer();
     }
 
-    @Test
-    void connectingIsSuccessful() {
+    @AfterAll
+    static void afterAll(){
+        server.stop();
+    }
+
+    private static void initialiseData() {
+        storageManager.addFood(new Grass("клевер", .4f));
+        storageManager.addFood(new Predator("лиса Алиса", 1.5f));
+        storageManager.addFood(new Predator("волк Вася", 2.8f));
+        storageManager.addFood(new Herbivore("заяц Петя", .8f));
+    }
+
+    private static void initialiseServer() {
         try {
             server.launch(1234, logger);
         } catch (Exception e) {
             e.printStackTrace();
             fail();
-        } finally {
-            server.stop();
         }
     }
 
     @Test
     void sendingRequestIsSuccessful() {
         try {
-            server.launch(1234, logger);
-
             Socket socket = new Socket("localhost", 1234);
             logger.logMessage("CLIENT using socket @" + socket.hashCode() + " " + socket.toString());
 
@@ -80,22 +92,12 @@ public class ServerTest {
         } catch (Exception e) {
             e.printStackTrace();
             fail();
-        } finally {
-            server.stop();
         }
     }
 
     @Test
     void sendingProperCommandSuccessful() {
-        StorageManager storageManager = StorageManager.getInstance();
-        storageManager.addFood(new Grass("клевер", .4f));
-        storageManager.addFood(new Predator("лиса Алиса", 1.5f));
-        storageManager.addFood(new Predator("волк Вася", 2.8f));
-        storageManager.addFood(new Herbivore("заяц Петя", .8f));
-
         try {
-            server.launch(1234, logger);
-
             Socket socket = new Socket("localhost", 1234);
             logger.logMessage("CLIENT using socket @" + socket.hashCode() + " " + socket.toString());
 
@@ -140,10 +142,11 @@ public class ServerTest {
             logger.logMessage("сервер прислал сообщение");
             logger.logMessage(response);
 
-//            dos.writeUTF("feed?");
-//            response = dis.readUTF();
-//            logger.logMessage("сервер прислал сообщение");
-//            logger.logMessage(response);
+            dos.writeUTF("feed?0&2&1&1");
+            logger.logMessage("запрос на кормление хищника (0) с id=3 травоядным(1) с id=1 ");
+            response = dis.readUTF();
+            logger.logMessage("сервер прислал сообщение");
+            logger.logMessage(response);
 
             dos.writeUTF("stp");
             response = dis.readUTF();
@@ -153,10 +156,6 @@ public class ServerTest {
         } catch (Exception e) {
             e.printStackTrace();
             fail();
-        } finally {
-            server.stop();
         }
-
-
     }
 }
