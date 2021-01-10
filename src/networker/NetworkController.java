@@ -3,14 +3,8 @@ package networker;
 import app.GeneralController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import data.CompositeKey;
-import model.Food;
-import model.Grass;
-import model.Herbivore;
-import model.Predator;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class NetworkController {
     public static Response prepareResponse(Request request) {
@@ -20,46 +14,35 @@ public class NetworkController {
                 // getting
                 if (args.size() > 0) {
                     ObjectMapper objectMapper = new ObjectMapper();
+                    Object value = null;
                     String jsonString;
                     switch (args.get(0)) {
                         case "all":
-                            Map<CompositeKey, Food> allFoods = GeneralController.getAllFoods();
-//                            String responseString = "";
-//                            for (CompositeKey compositeKey : allFoods.keySet()){
-//                                responseString += compositeKey.foodType + "&" + compositeKey.key + "&" + allFoods.get(compositeKey).getInfo();
-//                            }
-
-                            try {
-                                jsonString = objectMapper.writeValueAsString(allFoods);
-                                return new Response(false, jsonString);
-                            } catch (JsonProcessingException e) {
-                                break;
-                            }
+                            value = GeneralController.getAllFoods();
+                            break;
+                        case "anim":
+                            value = GeneralController.getAnimals();
+                            break;
                         case "pdt":
-                            Map<Integer, Predator> predators = GeneralController.getPredators();
-
-                            try {
-                                jsonString = objectMapper.writeValueAsString(predators);
-                                return new Response(false, jsonString);
-                            } catch (JsonProcessingException e) {
-                                break;
-                            }
+                            value = GeneralController.getPredators();
+                            break;
                         case "hbv":
-                            Map<Integer, Herbivore> herbivores = GeneralController.getHerbivores();
-                            try {
-                                jsonString = objectMapper.writeValueAsString(herbivores);
-                                return new Response(false, jsonString);
-                            } catch (JsonProcessingException e) {
-                                break;
-                            }
+                            value = GeneralController.getHerbivores();
+                            break;
                         case "grs":
-                            Map<Integer, Grass> grasses = GeneralController.getGrasses();
-                            try {
-                                jsonString = objectMapper.writeValueAsString(grasses);
-                                return new Response(false, jsonString);
-                            } catch (JsonProcessingException e) {
-                                break;
-                            }
+                            value = GeneralController.getGrasses();
+                            break;
+                        case "foodTypes":
+                            value = GeneralController.getFoodTypes();
+                            break;
+                        default:
+                            return new Response(false, "Ошибка: Неверный аргумент " + args.get(0) + " команды " + request.getCommand());
+                    }
+                    try {
+                        jsonString = objectMapper.writeValueAsString(value);
+                        return new Response(false, jsonString);
+                    } catch (JsonProcessingException e) {
+                        break;
                     }
                 }
                 break;

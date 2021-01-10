@@ -1,6 +1,5 @@
 package app;
 
-import data.CompositeKey;
 import data.FoodTypes;
 import data.StorageManager;
 import model.*;
@@ -38,7 +37,6 @@ public class GeneralController {
             }
 
             portString = portString.trim();
-
             int port;
             try {
                 port = Integer.parseInt(portString);
@@ -47,9 +45,7 @@ public class GeneralController {
             }
 
             server.launch(port, logger);
-
             logger.logMessage("Сервер успешно запущен " + LocalDateTime.now());
-
         } catch (Exception ex) {
             logger.logMessage("Произошла ошибка при запуске сервера: " + ex.getMessage()); // todo: некорректные данные на форму, DONE
         }
@@ -58,10 +54,6 @@ public class GeneralController {
     public static void stopServer() {
         server.stop();
         logger.logMessage("сервер остановлен " + LocalDateTime.now());
-    }
-
-    public static Map<CompositeKey, Food> getAllFoods() {
-        return storageManager.getAll();
     }
 
     public static void persistData() {
@@ -116,19 +108,24 @@ public class GeneralController {
         FoodTypes feedFoodType = FoodTypes.parseFoodType(feedFoodTypeInt);
         FoodTypes preyFoodType = FoodTypes.parseFoodType(preyFoodTypeInt);
 
-        Animal animalToFeed = storageManager.getAnimals().get(new CompositeKey(feedFoodType, animalId));
-        Food prey = storageManager.getAll().get(new CompositeKey(preyFoodType, foodId));
-        if (animalToFeed != null) {
-            try {
-                boolean preyEaten = animalToFeed.seeFood(prey);
-                if (preyEaten)
-                    feedStatus = "животное успешно покормлено";
-                else
-                    feedStatus = "животное не съело добычу";
-            } catch (IllegalStateException | IllegalArgumentException e) {
-                feedStatus += e.getMessage();
-            }
+        Animal animalToFeed = storageManager.getAnimals().get(animalId);
+        Food prey = storageManager.getAll().get(foodId);
+
+        if (animalToFeed == null) {
+            feedStatus += "не найдено животное для кормления";
+            return feedStatus;
         }
+
+        try {
+            boolean preyEaten = animalToFeed.seeFood(prey);
+            if (preyEaten)
+                feedStatus = "животное успешно покормлено";
+            else
+                feedStatus = "животное не съело добычу";
+        } catch (IllegalStateException | IllegalArgumentException e) {
+            feedStatus += e.getMessage();
+        }
+
         return feedStatus;
     }
 
@@ -142,5 +139,17 @@ public class GeneralController {
 
     public static Map<Integer, Grass> getGrasses() {
         return storageManager.getGrasses();
+    }
+
+    public static Map<Integer, Food> getAllFoods() {
+        return storageManager.getAll();
+    }
+
+    public static Map<Integer, Animal> getAnimals() {
+        return storageManager.getAnimals();
+    }
+
+    public static Map<String, FoodTypes> getFoodTypes() {
+        return FoodTypes.getLocalisedNames();
     }
 }

@@ -16,8 +16,8 @@ import java.net.Socket;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ServerTest {
-    private static MultiThreadedServer server = MultiThreadedServer.getInstance();
-    private static StorageManager storageManager = StorageManager.getInstance();
+    private static final MultiThreadedServer server = MultiThreadedServer.getInstance();
+    private static final StorageManager storageManager = StorageManager.getInstance();
     private static Logger logger = null;
 
     @BeforeAll
@@ -118,6 +118,12 @@ public class ServerTest {
             logger.logMessage("сервер прислал сообщение");
             logger.logMessage(response);
 
+            dos.writeUTF("get?anim");
+            logger.logMessage("запрос на получение животных");
+            response = dis.readUTF();
+            logger.logMessage("сервер прислал сообщение");
+            logger.logMessage(response);
+
             dos.writeUTF("get?pdt");
             logger.logMessage("запрос на получение хищников");
             response = dis.readUTF();
@@ -136,14 +142,20 @@ public class ServerTest {
             logger.logMessage("сервер прислал сообщение");
             logger.logMessage(response);
 
+            dos.writeUTF("get?foodTypes");
+            logger.logMessage("запрос на получение всех видов еды");
+            response = dis.readUTF();
+            logger.logMessage("сервер прислал сообщение");
+            logger.logMessage(response);
+
             dos.writeUTF("crt?0&медведь Миша&20.5");
             logger.logMessage("запрос на создание хищника (0)");
             response = dis.readUTF();
             logger.logMessage("сервер прислал сообщение");
             logger.logMessage(response);
 
-            dos.writeUTF("feed?0&2&1&1");
-            logger.logMessage("запрос на кормление хищника (0) с id=3 травоядным(1) с id=1 ");
+            dos.writeUTF("feed?0&3&1&4");
+            logger.logMessage("запрос на кормление хищника (0) с id=3 травоядным(1) с id=4 ");
             response = dis.readUTF();
             logger.logMessage("сервер прислал сообщение");
             logger.logMessage(response);
