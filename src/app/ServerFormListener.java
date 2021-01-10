@@ -29,28 +29,8 @@ public class ServerFormListener implements ActionListener {
     }
 
     private void onStart() {
-        try {
-            String sPort = form.getPortTextField().getText();
-            if (sPort.isBlank()) {
-                throw new IllegalArgumentException("порт не должен быть пустой");
-            }
-
-            sPort = sPort.trim();
-
-            int port;
-            try {
-                port = Integer.parseInt(sPort);
-            } catch (NumberFormatException ex) {
-                throw new IllegalArgumentException("введен неверный порт");
-            }
-
-            GeneralController.startServer(port); // this won't throw exceptions because of multithreading inside startServer()
-            this.form.onStartServer();
-            this.logger.logMessage("Сервер успешно запущен " + LocalDateTime.now());
-
-        } catch (Exception ex) {
-            logger.logMessage("Произошла ошибка при запуске сервера: " + ex.getMessage()); // todo: некорректные данные на форму, DONE
-        }
+        GeneralController.startServer(form.getPortTextField().getText());
+        form.onStartServer();
     }
 
     private void onStop() {

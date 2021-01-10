@@ -31,14 +31,27 @@ public class GeneralController {
         logger.logMessage(startStatus);
     }
 
-    public static void startServer(int port) {
+    public static void startServer(String portString) {
         try {
-            logger.logMessage("-------");
+            if (portString.isBlank()) {
+                throw new IllegalArgumentException("порт не должен быть пустой");
+            }
+
+            portString = portString.trim();
+
+            int port;
+            try {
+                port = Integer.parseInt(portString);
+            } catch (NumberFormatException ex) {
+                throw new IllegalArgumentException("введен неверный порт");
+            }
+
             server.launch(port, logger);
-            logger.logMessage("-------");
-        } catch (Exception e) {
-            logger.logMessage(e.getMessage());
-            server.stop();
+
+            logger.logMessage("Сервер успешно запущен " + LocalDateTime.now());
+
+        } catch (Exception ex) {
+            logger.logMessage("Произошла ошибка при запуске сервера: " + ex.getMessage()); // todo: некорректные данные на форму, DONE
         }
     }
 
