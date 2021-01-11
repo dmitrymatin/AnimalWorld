@@ -9,6 +9,13 @@ public class Response {
         this.message = message;
     }
 
+    public static Response parseResponse(String responseString) {
+        boolean closureStatus = responseString.contains("сессия завершена");
+        String message = responseString;
+
+        return new Response(closureStatus, message);
+    }
+
     public boolean isClosureStatus() {
         return closureStatus;
     }
