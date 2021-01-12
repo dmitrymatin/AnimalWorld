@@ -22,8 +22,8 @@ public enum FoodTypes {
         this.label = label;
     }
 
-    public static FoodTypes parseFoodType(int foodTypeOrdinal) {
-        if (foodTypeOrdinal < FoodTypes.values().length) {
+    public static FoodTypes parseFoodType(int foodTypeOrdinal) throws IllegalArgumentException {
+        if (foodTypeOrdinal >=0 && foodTypeOrdinal < FoodTypes.values().length) {
             return FoodTypes.values()[foodTypeOrdinal];
         } else {
             throw new IllegalArgumentException("food type was out of range");
