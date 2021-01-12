@@ -1,6 +1,5 @@
 package app;
 
-import networker.NetworkController;
 import networker.Request;
 import networker.Response;
 
@@ -34,7 +33,7 @@ public class Session implements Runnable {
                 String inputLine = in.readUTF();
 
                 Request request = Request.parseRequest(inputLine);/* NetworkController.parseQueryString(inputLine);*/
-                Response response = NetworkController.prepareResponse(request);
+                Response response = GeneralController.prepareResponse(request);
 
                 out.writeUTF(response.getMessage());
                 logger.logMessage("responded to client " + clientSocket.toString());
