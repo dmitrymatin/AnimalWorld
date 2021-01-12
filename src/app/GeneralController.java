@@ -73,7 +73,7 @@ public class GeneralController {
                 // getting
                 if (args.size() >= 1) {
                     ObjectMapper objectMapper = new ObjectMapper();
-                    Object value = null;
+                    Object value;
                     String jsonString;
                     switch (args.get(0)) {
                         case "all":
