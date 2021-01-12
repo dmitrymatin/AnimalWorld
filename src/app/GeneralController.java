@@ -68,6 +68,7 @@ public class GeneralController {
 
     public static Response prepareResponse(Request request) {
         ArrayList<String> args = request.getArgs();
+        // todo: break switch actions into smaller methods
         switch (request.getCommand()) {
             case "get":
                 // getting

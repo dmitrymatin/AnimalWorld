@@ -43,7 +43,7 @@ public class Session implements Runnable {
                     break;
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException e) { // todo: handle SocketException that states "Connection reset"
             e.printStackTrace();
         }
     }
