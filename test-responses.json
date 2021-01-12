@@ -1,20 +1,20 @@
-server received client request using socket @523241027 Socket[addr=/127.0.0.1,port=52371,localport=1234
+server received client request using socket @523241027 Socket[addr=/127.0.0.1,port=56535,localport=1234
 ]
 server prepared in/out streams
 Session instance created 374535671
-CLIENT using socket @682376643 Socket[addr=localhost/127.0.0.1,port=1234,localport=52371
-]
-клиент должен получить сообщение
-доступно для чтения: 0
 Server created new thread Thread-2
 ServerSocket waiting for incoming requests on port 1234
+CLIENT using socket @682376643 Socket[addr=localhost/127.0.0.1,port=1234,localport=56535
+]
+клиент должен получить сообщение
 отправлено сообщение клиенту
 server entered while loop for current session
+доступно для чтения: 0
 доступно для чтения: 0
 сервер прислал сообщение
 вы подключены!
 запрос на получение всей еды
-responded to client Socket[addr=/127.0.0.1,port=52371,localport=1234
+responded to client Socket[addr=/127.0.0.1,port=56535,localport=1234
 ]
 server entered while loop for current session
 сервер прислал сообщение
@@ -33,7 +33,7 @@ server entered while loop for current session
     }
 }
 запрос на получение животных
-responded to client Socket[addr=/127.0.0.1,port=52371,localport=1234
+responded to client Socket[addr=/127.0.0.1,port=56535,localport=1234
 ]
 server entered while loop for current session
 сервер прислал сообщение
@@ -49,7 +49,7 @@ server entered while loop for current session
     }
 }
 запрос на получение хищников
-responded to client Socket[addr=/127.0.0.1,port=52371,localport=1234
+responded to client Socket[addr=/127.0.0.1,port=56535,localport=1234
 ]
 server entered while loop for current session
 сервер прислал сообщение
@@ -62,7 +62,7 @@ server entered while loop for current session
     }
 }
 запрос на получение травоядных
-responded to client Socket[addr=/127.0.0.1,port=52371,localport=1234
+responded to client Socket[addr=/127.0.0.1,port=56535,localport=1234
 ]
 server entered while loop for current session
 сервер прислал сообщение
@@ -72,7 +72,7 @@ server entered while loop for current session
     }
 }
 запрос на получение травы
-responded to client Socket[addr=/127.0.0.1,port=52371,localport=1234
+responded to client Socket[addr=/127.0.0.1,port=56535,localport=1234
 ]
 server entered while loop for current session
 сервер прислал сообщение
@@ -82,29 +82,29 @@ server entered while loop for current session
     }
 }
 запрос на получение всех видов еды
-responded to client Socket[addr=/127.0.0.1,port=52371,localport=1234
-]
-server entered while loop for current session
 сервер прислал сообщение
 {
-    "Хищник": "Predator",
-    "Трава": "Grass",
-    "Травоядное": "Herbivore"
+    "0": "Хищник",
+    "1": "Травоядное",
+    "2": "Трава"
 }
+responded to client Socket[addr=/127.0.0.1,port=56535,localport=1234
+]
+server entered while loop for current session
 запрос на создание хищника (0)
-responded to client Socket[addr=/127.0.0.1,port=52371,localport=1234
+responded to client Socket[addr=/127.0.0.1,port=56535,localport=1234
 ]
 server entered while loop for current session
 сервер прислал сообщение
 еда успешно создана
 запрос на кормление хищника (0) с id=3 травоядным(1) с id=4
-responded to client Socket[addr=/127.0.0.1,port=52371,localport=1234
-]
-server entered while loop for current session
 сервер прислал сообщение
 животное не съело добычу
-responded to client Socket[addr=/127.0.0.1,port=52371,localport=1234
+responded to client Socket[addr=/127.0.0.1,port=56535,localport=1234
+]
+server entered while loop for current session
+responded to client Socket[addr=/127.0.0.1,port=56535,localport=1234
 ]
 сервер прислал сообщение
-сессия завершена
+стоп: сессия завершена
 closing session @374535671

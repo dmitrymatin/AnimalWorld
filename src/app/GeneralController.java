@@ -149,7 +149,7 @@ public class GeneralController {
         return storageManager.getAnimals();
     }
 
-    public static Map<String, FoodTypes> getFoodTypes() {
+    public static Map<Integer, String> getFoodTypes() {
         return FoodTypes.getLocalisedNames();
     }
 }

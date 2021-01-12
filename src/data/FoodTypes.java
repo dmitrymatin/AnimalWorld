@@ -10,11 +10,11 @@ public enum FoodTypes {
 
     private final String label;
 
-    private static final Map<String, FoodTypes> labels = new HashMap<>();
+    private static final Map<Integer, String> labels = new HashMap<>();
 
     static {
         for (FoodTypes e : values()) {
-            labels.put(e.label, e);
+            labels.put(e.ordinal(), e.label);
         }
     }
 
@@ -30,7 +30,7 @@ public enum FoodTypes {
         }
     }
 
-    public static Map<String, FoodTypes> getLocalisedNames() {
+    public static Map<Integer, String> getLocalisedNames() {
         return labels;
     }
 }
