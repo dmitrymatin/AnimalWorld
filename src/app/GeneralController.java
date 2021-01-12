@@ -89,24 +89,17 @@ public class GeneralController {
         return creationStatus;
     }
 
-    public static String feed(String feedFoodTypeString, String animalIdString, String preyFoodTypeString, String foodIdString) {
+    public static String feed(String animalIdString, String foodIdString) {
         String feedStatus = "не удалось покормить животное: ";
-        int feedFoodTypeInt;
         int animalId;
-        int preyFoodTypeInt;
         int foodId;
         try {
-            feedFoodTypeInt = Integer.parseInt(feedFoodTypeString);
             animalId = Integer.parseInt(animalIdString);
-            preyFoodTypeInt = Integer.parseInt(preyFoodTypeString);
             foodId = Integer.parseInt(foodIdString);
         } catch (NumberFormatException e) {
             feedStatus += "переданы неверные параметры";
             return feedStatus;
         }
-
-        FoodTypes feedFoodType = FoodTypes.parseFoodType(feedFoodTypeInt);
-        FoodTypes preyFoodType = FoodTypes.parseFoodType(preyFoodTypeInt);
 
         Animal animalToFeed = storageManager.getAnimals().get(animalId);
         Food prey = storageManager.getAll().get(foodId);

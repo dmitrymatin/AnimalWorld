@@ -12,7 +12,7 @@ public class NetworkController {
         switch (request.getCommand()) {
             case "get":
                 // getting
-                if (args.size() > 0) {
+                if (args.size() >= 1) {
                     ObjectMapper objectMapper = new ObjectMapper();
                     Object value = null;
                     String jsonString;
@@ -48,15 +48,15 @@ public class NetworkController {
                 break;
             case "crt":
                 // creating
-                if (args.size() > 2) {
+                if (args.size() >= 3) {
                     String status = GeneralController.createFood(args.get(0), args.get(1), args.get(2));
                     return new Response(false, false, status);
                 }
                 break;
             case "feed":
                 // feeding
-                if (args.size() > 3) {
-                    String feedStatus = GeneralController.feed(args.get(0), args.get(1), args.get(2), args.get(3));
+                if (args.size() >= 2) {
+                    String feedStatus = GeneralController.feed(args.get(0), args.get(1));
                     return new Response(false, false, feedStatus);
                 }
                 break;
