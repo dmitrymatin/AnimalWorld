@@ -22,6 +22,10 @@ public class Response {
         return closureStatus;
     }
 
+    public boolean isErrorStatus() {
+        return errorStatus;
+    }
+
     public String getMessage() {
         return message;
     }
