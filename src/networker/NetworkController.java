@@ -36,11 +36,11 @@ public class NetworkController {
                             value = GeneralController.getFoodTypes();
                             break;
                         default:
-                            return new Response(false, "Ошибка: Неверный аргумент " + args.get(0) + " команды " + request.getCommand());
+                            return new Response(false, true, "ошибка: Неверный аргумент " + args.get(0) + " команды " + request.getCommand());
                     }
                     try {
                         jsonString = objectMapper.writeValueAsString(value);
-                        return new Response(false, jsonString);
+                        return new Response(false, false, jsonString);
                     } catch (JsonProcessingException e) {
                         break;
                     }
@@ -50,22 +50,22 @@ public class NetworkController {
                 // creating
                 if (args.size() > 2) {
                     String status = GeneralController.createFood(args.get(0), args.get(1), args.get(2));
-                    return new Response(false, status);
+                    return new Response(false, false, status);
                 }
                 break;
             case "feed":
                 // feeding
                 if (args.size() > 3) {
                     String feedStatus = GeneralController.feed(args.get(0), args.get(1), args.get(2), args.get(3));
-                    return new Response(false, feedStatus);
+                    return new Response(false, false, feedStatus);
                 }
                 break;
 
             case "stp":
-                return new Response(true, "сессия завершена");
+                return new Response(true, false, "стоп: сессия завершена");
             default:
-                return new Response(false, "несуществующая операция");
+                return new Response(false, true, "ошибка: несуществующая операция");
         }
-        return new Response(false, "");
+        return new Response(false, true, "ошибка: несуществующая команда");
     }
 }
