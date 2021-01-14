@@ -20,24 +20,25 @@ public class Predator extends Animal {
 
         if (!(food instanceof Animal))
             throw new IllegalArgumentException("Predator can only view animals as food");
-
-        boolean gotHungry = new Random().nextBoolean();
-        if (gotHungry) {
+        else{
             Animal animalToEat = (Animal) food;
-            if (hunt(animalToEat)) {
-                eat(animalToEat);
-                return true;
+
+            if (!animalToEat.isAlive())
+                throw new IllegalArgumentException("Predator cannot hunt for dead animal");
+
+            boolean gotHungry = new Random().nextBoolean();
+            if (gotHungry) {
+                if (hunt(animalToEat)) {
+                    eat(animalToEat);
+                    return true;
+                }
             }
-//            else
-//                System.out.println("(Debug) Predator got hungry but could not catch the animal " + animalToEat);
         }
+
         return false;
     }
 
     protected boolean hunt(Animal animal) throws IllegalArgumentException {
-        if (!animal.isAlive)
-            throw new IllegalArgumentException("Predator cannot hunt for dead animal");
-
         return new Random().nextBoolean();
     }
 
