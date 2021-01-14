@@ -51,6 +51,8 @@ public class GeneralController {
 
             server.launch(port, logger);
             logger.logMessage("Сервер успешно запущен " + LocalDateTime.now());
+
+            serverForm.onStartServer();
         } catch (Exception ex) {
             logger.logMessage("Произошла ошибка при запуске сервера: " + ex.getMessage()); // todo: некорректные данные на форму, DONE
         }
@@ -59,6 +61,7 @@ public class GeneralController {
     public static void stopServer() {
         server.stop();
         logger.logMessage("сервер остановлен " + LocalDateTime.now());
+        serverForm.onStopServer();
     }
 
     public static void persistData() {
