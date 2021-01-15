@@ -3,6 +3,7 @@ package app;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 
 public class MultiThreadedServer {
@@ -12,7 +13,7 @@ public class MultiThreadedServer {
     private Logger logger = null;
 
     private ServerSocket serverSocket = null;
-    ArrayList<ThreadedLogic> sessions = new ArrayList<>();
+    ArrayList<Session> sessions = new ArrayList<>();
 
     public static MultiThreadedServer getInstance() {
         if (uniqueInstance == null) {
@@ -28,64 +29,74 @@ public class MultiThreadedServer {
     public void launch(int port, Logger logger) throws Exception {
         if (listen)
             throw new Exception("server has already been started");
-
         this.logger = logger;
 
         try {
             serverSocket = new ServerSocket(port);
-
             logger.logMessage("created ServerSocket, port: " + port);
-            //System.out.println("Создан ServerSocket, port: " + port);
         } catch (IOException e) {
             throw new Exception("Error occurred while trying to launch server", e);
         }
 
-        startListening(port);
+        Runnable runnableServerLauncher = new Runnable() {
+            public void run() {
+                startListening();
+            }
+        };
+        Thread serverLauncherThread = new Thread(runnableServerLauncher);
+        serverLauncherThread.start();
     }
 
-    private void startListening(int port) throws IOException {
+    private void startListening() {
         listen = true;
         try {
             while (listen) {
-                logger.logMessage("ServerSocket waiting for incoming requests on port " + port);
-                //System.out.println("\nВ цикле ServerSocket ожидает входящие запросы от клиентов на порт " + port);
-
+                logger.logMessage("ServerSocket waiting for incoming requests on port " + serverSocket.getLocalPort()); // TODO: EDT
                 Socket socket = serverSocket.accept();
+                logger.logMessage("server received client request using socket @" + socket.hashCode() + " " + socket.toString());
 
-                ThreadedLogic threadedLogic = new ThreadedLogic(socket);
-                sessions.add(threadedLogic);
+                Session session = new Session(socket, this, logger);
+                sessions.add(session);
+                logger.logMessage("Session instance created " + session.hashCode()); // TODO: EDT
 
-                logger.logMessage("ThreadedLogic instance created");
-                //System.out.println("Создан экземпляр класса ThreadedLogic");
-
-                Thread thread = new Thread(threadedLogic);
+                Thread thread = new Thread(session);
                 thread.start();
 
-                logger.logMessage("Server created new thread");
-                //System.out.println("Сервер создал новый поток");
+                logger.logMessage("Server created new thread " + thread.getName()); // TODO: EDT
             }
+        } catch (SocketException se) {
+            logger.logMessage("Сокет закрыт");
         } catch (IOException e) {
-            listen = false;
-            throw e;
+            logger.logMessage("Произошла ошибка во время работы сервера: " + e.getMessage());
+            stop();
+        } finally {
+            terminateSessions();
+        }
+    }
+
+    private void terminateSessions() {
+        for (Session s : sessions) {
+            removeSession(s);
         }
     }
 
     public void stop() {
         try {
-            for (ThreadedLogic s : sessions) {
-                s.getSocket().close();
-
-                logger.logMessage("server closed client socket");
-                //System.out.println("Закрыт клиентский сокет на стороне сервера\n");
-            }
-
             serverSocket.close();
-            listen = false;
-
-            logger.logMessage("ServerSocket closed");
-            //System.out.println("Закрыт серверный сокет (ServerSocket)");
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.logMessage("Произошла ошибка при закрытии сервера " + e.getMessage());
+        }
+        finally {
+            listen = false;
+        }
+    }
+
+    public void removeSession(Session session) {
+        try {
+            session.closeSession();
+            sessions.remove(session);
+        } catch (IOException ex) {
+            logger.logMessage("Произошла ошибка во время удаления сессии: " + ex.getMessage());
         }
     }
 }

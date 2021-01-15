@@ -1,5 +1,8 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(value = {"alive", "name", "mass"})
 public abstract class Animal extends Food {
 
     protected boolean isAlive;
@@ -9,17 +12,18 @@ public abstract class Animal extends Food {
         this.isAlive = true;
     }
 
-    public abstract void seeFood(Food food); // former seePrey
+    public abstract boolean seeFood(Food food) throws IllegalStateException, IllegalArgumentException; // former seePrey
+
     protected abstract void eat(Food food);
 
     public void kill() throws IllegalStateException {
         if (!isAlive)
             throw new IllegalStateException("Cannot kill a dead animal");
         isAlive = false;
-   }
+    }
 
     public String getInfo() {
-        return "name = " + name + " mass = " + mass + " is alive: " + isAlive;
+        return super.getInfo() + (isAlive ? " (живое)" : " (мертвое)");
     }
 
     public boolean isAlive() {

@@ -2,6 +2,9 @@ package model;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(value = {"name", "mass"})
 public abstract class Food implements Serializable {
     protected String name;
     protected float mass;
@@ -15,7 +18,7 @@ public abstract class Food implements Serializable {
     }
 
     public String getInfo() {
-        return "name = " + name + " mass = " + mass;
+        return name + " массой " + mass;
     }
 
     public String getName() {

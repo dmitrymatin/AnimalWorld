@@ -2,7 +2,6 @@ package data;
 
 import model.*;
 
-import java.io.IOException;
 import java.util.*;
 
 public class StorageManager {
@@ -11,6 +10,8 @@ public class StorageManager {
     private final String GRASSES_FILENAME = "grasses.dat";
 
     private static StorageManager uniqueInstance = null;
+
+    private int elementsCount = 0;
 
     private Storage<Predator> predatorStorage = new Storage<>();
     private Storage<Herbivore> herbivoreStorage = new Storage<>();
@@ -28,11 +29,11 @@ public class StorageManager {
 
     public void addFood(Food food) {
         if (food instanceof Predator)
-            predatorStorage.addElement((Predator) food);
+            predatorStorage.addElement(++elementsCount, (Predator) food);
         else if (food instanceof Herbivore)
-            herbivoreStorage.addElement((Herbivore) food);
+            herbivoreStorage.addElement(++elementsCount, (Herbivore) food);
         else if (food instanceof Grass)
-            grassStorage.addElement((Grass) food);
+            grassStorage.addElement(++elementsCount, (Grass) food);
     }
 
     public void updateFood(int id, Food food) {
@@ -61,9 +62,12 @@ public class StorageManager {
 
     public void load() throws Exception {
         try {
-            predatorStorage.loadElements(PREDATORS_FILENAME);
-            herbivoreStorage.loadElements(HERBIVORES_FILENAME);
-            grassStorage.loadElements(GRASSES_FILENAME);
+            int maxPredatorId = predatorStorage.loadElements(PREDATORS_FILENAME);
+            int maxHerbivoreId = herbivoreStorage.loadElements(HERBIVORES_FILENAME);
+            int maxGrassId = grassStorage.loadElements(GRASSES_FILENAME);
+            int[] maxIds = new int[] {maxPredatorId, maxHerbivoreId, maxGrassId};
+
+            elementsCount = Arrays.stream(maxIds).max().getAsInt();
         } catch (IllegalAccessException ex) {
             throw new Exception("could not load data \n" + ex.getMessage());
         }
@@ -79,5 +83,27 @@ public class StorageManager {
 
     public Map<Integer, Grass> getGrasses() {
         return grassStorage.getElements();
+    }
+
+    public Map<Integer, Animal> getAnimals() {
+        Map<Integer, Predator> predators = getPredators();
+        Map<Integer, Herbivore> herbivores = getHerbivores();
+
+        Map<Integer, Animal> animals = new HashMap<>(predators.size() + herbivores.size());
+        animals.putAll(predators);
+        animals.putAll(herbivores);
+
+        return animals;
+    }
+
+    public Map<Integer, Food> getAll() {
+        Map<Integer, Grass> grasses = getGrasses();
+        Map<Integer, Animal> animals = getAnimals();
+
+        Map<Integer, Food> allFoods = new HashMap<>(animals.size() + grasses.size());
+        allFoods.putAll(animals);
+        allFoods.putAll(grasses);
+
+        return allFoods;
     }
 }
