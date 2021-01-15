@@ -2,7 +2,6 @@ package app;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.LocalDateTime;
 
 public class ServerFormListener implements ActionListener {
 
@@ -30,12 +29,10 @@ public class ServerFormListener implements ActionListener {
 
     private void onStart() {
         GeneralController.startServer(form.getPortTextField().getText());
-        form.onStartServer();
     }
 
     private void onStop() {
         GeneralController.stopServer();
-        this.form.onStopServer();
     }
 
     private void onExit() {

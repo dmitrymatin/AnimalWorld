@@ -1,62 +1,78 @@
-server received client request using socket @1128230589 Socket[addr=/127.0.0.1,port=52083,localport=1234
+server received client request using socket @523241027 Socket[addr=/127.0.0.1,port=56535,localport=1234
 ]
 server prepared in/out streams
-Session instance created 1079227199
-CLIENT using socket @682376643 Socket[addr=localhost/127.0.0.1,port=1234,localport=52083
-]
-клиент должен получить сообщение
+Session instance created 374535671
 Server created new thread Thread-2
 ServerSocket waiting for incoming requests on port 1234
-доступно для чтения: 0
+CLIENT using socket @682376643 Socket[addr=localhost/127.0.0.1,port=1234,localport=56535
+]
+клиент должен получить сообщение
 отправлено сообщение клиенту
 server entered while loop for current session
+доступно для чтения: 0
 доступно для чтения: 0
 сервер прислал сообщение
 вы подключены!
 запрос на получение всей еды
-responded to client Socket[addr=/127.0.0.1,port=52083,localport=1234
-]
-server entered while loop for current session
-сервер прислал сообщение
-{
-    "<1,1>": {
-        "info": "заяц Петя массой 0.8 (живое)"
-    },
-    "<0,1>": {
-        "info": "лиса Алиса массой 1.5 (живое)"
-    },
-    "<0,2>": {
-        "info": "волк Вася массой 2.8 (живое)"
-    },
-    "<2,1>": {
-        "info": "клевер массой 0.4"
-    }
-}
-запрос на получение хищников
-responded to client Socket[addr=/127.0.0.1,port=52083,localport=1234
+responded to client Socket[addr=/127.0.0.1,port=56535,localport=1234
 ]
 server entered while loop for current session
 сервер прислал сообщение
 {
     "1": {
-        "info": "лиса Алиса массой 1.5 (живое)"
+        "info": "клевер массой 0.4"
     },
     "2": {
+        "info": "лиса Алиса массой 1.5 (живое)"
+    },
+    "3": {
+        "info": "волк Вася массой 2.8 (живое)"
+    },
+    "4": {
+        "info": "заяц Петя массой 0.8 (живое)"
+    }
+}
+запрос на получение животных
+responded to client Socket[addr=/127.0.0.1,port=56535,localport=1234
+]
+server entered while loop for current session
+сервер прислал сообщение
+{
+    "4": {
+        "info": "заяц Петя массой 0.8 (живое)"
+    },
+    "2": {
+        "info": "лиса Алиса массой 1.5 (живое)"
+    },
+    "3": {
+        "info": "волк Вася массой 2.8 (живое)"
+    }
+}
+запрос на получение хищников
+responded to client Socket[addr=/127.0.0.1,port=56535,localport=1234
+]
+server entered while loop for current session
+сервер прислал сообщение
+{
+    "2": {
+        "info": "лиса Алиса массой 1.5 (живое)"
+    },
+    "3": {
         "info": "волк Вася массой 2.8 (живое)"
     }
 }
 запрос на получение травоядных
-responded to client Socket[addr=/127.0.0.1,port=52083,localport=1234
+responded to client Socket[addr=/127.0.0.1,port=56535,localport=1234
 ]
 server entered while loop for current session
 сервер прислал сообщение
 {
-    "1": {
+    "4": {
         "info": "заяц Петя массой 0.8 (живое)"
     }
 }
 запрос на получение травы
-responded to client Socket[addr=/127.0.0.1,port=52083,localport=1234
+responded to client Socket[addr=/127.0.0.1,port=56535,localport=1234
 ]
 server entered while loop for current session
 сервер прислал сообщение
@@ -65,20 +81,30 @@ server entered while loop for current session
         "info": "клевер массой 0.4"
     }
 }
+запрос на получение всех видов еды
+сервер прислал сообщение
+{
+    "0": "Хищник",
+    "1": "Травоядное",
+    "2": "Трава"
+}
+responded to client Socket[addr=/127.0.0.1,port=56535,localport=1234
+]
+server entered while loop for current session
 запрос на создание хищника (0)
-responded to client Socket[addr=/127.0.0.1,port=52083,localport=1234
+responded to client Socket[addr=/127.0.0.1,port=56535,localport=1234
 ]
 server entered while loop for current session
 сервер прислал сообщение
 еда успешно создана
-запрос на кормление хищника (0) с id=3 травоядным(1) с id=1
-responded to client Socket[addr=/127.0.0.1,port=52083,localport=1234
+запрос на кормление хищника (0) с id=3 травоядным(1) с id=4
+сервер прислал сообщение
+животное не съело добычу
+responded to client Socket[addr=/127.0.0.1,port=56535,localport=1234
 ]
 server entered while loop for current session
-сервер прислал сообщение
-животному не съело добычу
-сервер прислал сообщение
-сессия завершена
-responded to client Socket[addr=/127.0.0.1,port=52083,localport=1234
+responded to client Socket[addr=/127.0.0.1,port=56535,localport=1234
 ]
-closing session @1079227199
+сервер прислал сообщение
+стоп: сессия завершена
+closing session @374535671

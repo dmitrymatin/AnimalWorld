@@ -9,11 +9,14 @@ public class Herbivore extends Animal {
     }
 
     public boolean seeFood(Food food) throws IllegalStateException, IllegalArgumentException {
-        if (!this.isAlive)
-            throw new IllegalStateException("Cannot perform actions on dead herbivore");
+        if (this == food)
+            throw new IllegalArgumentException("Food cannot be same object as hunter");
 
         if (food == null)
             throw new IllegalArgumentException("Food not specified");
+
+        if (!this.isAlive)
+            throw new IllegalStateException("Cannot perform actions on dead herbivore");
 
         if (!(food instanceof Grass))
             throw new IllegalArgumentException("Herbivore can only view grass as food");

@@ -3,6 +3,7 @@ package app;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 
 public class MultiThreadedServer {
@@ -28,12 +29,10 @@ public class MultiThreadedServer {
     public void launch(int port, Logger logger) throws Exception {
         if (listen)
             throw new Exception("server has already been started");
-
         this.logger = logger;
 
         try {
             serverSocket = new ServerSocket(port);
-
             logger.logMessage("created ServerSocket, port: " + port);
         } catch (IOException e) {
             throw new Exception("Error occurred while trying to launch server", e);
@@ -41,27 +40,22 @@ public class MultiThreadedServer {
 
         Runnable runnableServerLauncher = new Runnable() {
             public void run() {
-                try {
-                    startListening(port);
-                } catch (Exception e) {
-                    logger.logMessage("Произошла ошибка во время работы сервера: " + e.getMessage());// TODO: EDT
-//                    stop();
-                }
+                startListening();
             }
         };
         Thread serverLauncherThread = new Thread(runnableServerLauncher);
         serverLauncherThread.start();
     }
 
-    private void startListening(int port) throws IOException {
+    private void startListening() {
         listen = true;
         try {
             while (listen) {
-                logger.logMessage("ServerSocket waiting for incoming requests on port " + port); // TODO: EDT
+                logger.logMessage("ServerSocket waiting for incoming requests on port " + serverSocket.getLocalPort()); // TODO: EDT
                 Socket socket = serverSocket.accept();
                 logger.logMessage("server received client request using socket @" + socket.hashCode() + " " + socket.toString());
 
-                Session session = new Session(socket, logger);
+                Session session = new Session(socket, this, logger);
                 sessions.add(session);
                 logger.logMessage("Session instance created " + session.hashCode()); // TODO: EDT
 
@@ -70,24 +64,39 @@ public class MultiThreadedServer {
 
                 logger.logMessage("Server created new thread " + thread.getName()); // TODO: EDT
             }
+        } catch (SocketException se) {
+            logger.logMessage("Сокет закрыт");
         } catch (IOException e) {
-            listen = false;
-            throw e;
+            logger.logMessage("Произошла ошибка во время работы сервера: " + e.getMessage());
+            stop();
+        } finally {
+            terminateSessions();
+        }
+    }
+
+    private void terminateSessions() {
+        for (Session s : sessions) {
+            removeSession(s);
         }
     }
 
     public void stop() {
         try {
-            for (Session s : sessions) {
-                s.closeSession();
-            }
-
             serverSocket.close();
-            listen = false;
-
-            logger.logMessage("ServerSocket closed"); // TODO: EDT
         } catch (IOException e) {
             logger.logMessage("Произошла ошибка при закрытии сервера " + e.getMessage());
+        }
+        finally {
+            listen = false;
+        }
+    }
+
+    public void removeSession(Session session) {
+        try {
+            session.closeSession();
+            sessions.remove(session);
+        } catch (IOException ex) {
+            logger.logMessage("Произошла ошибка во время удаления сессии: " + ex.getMessage());
         }
     }
 }

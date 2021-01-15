@@ -8,10 +8,8 @@ import java.util.Map;
 class Storage<E> {
     private Map<Integer, E> elements = new HashMap<>();
 
-    private int elementsCount = 0;
-
-    public void addElement(E element) {
-        elements.put(++elementsCount, element);
+    public void addElement(int id, E element) {
+        elements.put(id, element);
     }
 
     public void updateElement(int id, E element) {
@@ -38,7 +36,7 @@ class Storage<E> {
         }
     }
 
-    public void loadElements(String fileName) throws IllegalAccessException {
+    public int loadElements(String fileName) throws IllegalAccessException {
         try {
             FileInputStream fis = new FileInputStream(fileName);
             ObjectInputStream ois = new ObjectInputStream(fis);
@@ -53,7 +51,7 @@ class Storage<E> {
             ois.close();
             fis.close();
 
-            elementsCount = elements.keySet().size() == 0 ? 0 : Collections.max(elements.keySet());
+            return elements.keySet().size() == 0 ? 0 : Collections.max(elements.keySet());
         } catch (ClassNotFoundException | IOException ex) {
             throw new IllegalAccessException("could not load data from file " + ex.getMessage());
         }

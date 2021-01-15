@@ -1,11 +1,15 @@
 package app;
 
-import data.CompositeKey;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import data.FoodTypes;
 import data.StorageManager;
 import model.*;
+import networker.Request;
+import networker.Response;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class GeneralController {
@@ -37,19 +41,13 @@ public class GeneralController {
                 throw new IllegalArgumentException("порт не должен быть пустой");
             }
 
-            portString = portString.trim();
-
-            int port;
-            try {
-                port = Integer.parseInt(portString);
-            } catch (NumberFormatException ex) {
+            int port = Integer.parseInt(portString.trim());
+            if (!(port >= 0 && port <= 65535))
                 throw new IllegalArgumentException("введен неверный порт");
-            }
-
             server.launch(port, logger);
-
             logger.logMessage("Сервер успешно запущен " + LocalDateTime.now());
 
+            serverForm.onStartServer();
         } catch (Exception ex) {
             logger.logMessage("Произошла ошибка при запуске сервера: " + ex.getMessage()); // todo: некорректные данные на форму, DONE
         }
@@ -58,15 +56,75 @@ public class GeneralController {
     public static void stopServer() {
         server.stop();
         logger.logMessage("сервер остановлен " + LocalDateTime.now());
-    }
-
-    public static Map<CompositeKey, Food> getAllFoods() {
-        return storageManager.getAll();
+        serverForm.onStopServer();
     }
 
     public static void persistData() {
         logger.logMessage("сохранение данных ...");
         storageManager.save();
+    }
+
+    public static Response prepareResponse(Request request) {
+        ArrayList<String> args = request.getArgs();
+        // todo: break switch actions into smaller methods
+        switch (request.getCommand()) {
+            case "get":
+                // getting
+                if (args.size() >= 1) {
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    Object value;
+                    String jsonString;
+                    switch (args.get(0)) {
+                        case "all":
+                            value = GeneralController.getAllFoods();
+                            break;
+                        case "anim":
+                            value = GeneralController.getAnimals();
+                            break;
+                        case "pdt":
+                            value = GeneralController.getPredators();
+                            break;
+                        case "hbv":
+                            value = GeneralController.getHerbivores();
+                            break;
+                        case "grs":
+                            value = GeneralController.getGrasses();
+                            break;
+                        case "foodTypes":
+                            value = GeneralController.getFoodTypes();
+                            break;
+                        default:
+                            return new Response(false, true, "ошибка: Неверный аргумент " + args.get(0) + " команды " + request.getCommand());
+                    }
+                    try {
+                        jsonString = objectMapper.writeValueAsString(value);
+                        return new Response(false, false, jsonString);
+                    } catch (JsonProcessingException e) {
+                        break;
+                    }
+                }
+                break;
+            case "crt":
+                // creating
+                if (args.size() >= 3) {
+                    String status = GeneralController.createFood(args.get(0), args.get(1), args.get(2));
+                    return new Response(false, false, status);
+                }
+                break;
+            case "feed":
+                // feeding
+                if (args.size() >= 2) {
+                    String feedStatus = GeneralController.feed(args.get(0), args.get(1));
+                    return new Response(false, false, feedStatus);
+                }
+                break;
+
+            case "stp":
+                return new Response(true, false, "стоп: сессия завершена");
+            default:
+                return new Response(false, true, "ошибка: несуществующая операция");
+        }
+        return new Response(false, true, "ошибка: несуществующая команда");
     }
 
     public static String createFood(String foodTypeString, String name, String mass) {
@@ -97,38 +155,36 @@ public class GeneralController {
         return creationStatus;
     }
 
-    public static String feed(String feedFoodTypeString, String animalIdString, String preyFoodTypeString, String foodIdString) {
+    public static String feed(String animalIdString, String foodIdString) {
         String feedStatus = "не удалось покормить животное: ";
-        int feedFoodTypeInt;
         int animalId;
-        int preyFoodTypeInt;
         int foodId;
         try {
-            feedFoodTypeInt = Integer.parseInt(feedFoodTypeString);
             animalId = Integer.parseInt(animalIdString);
-            preyFoodTypeInt = Integer.parseInt(preyFoodTypeString);
             foodId = Integer.parseInt(foodIdString);
         } catch (NumberFormatException e) {
             feedStatus += "переданы неверные параметры";
             return feedStatus;
         }
 
-        FoodTypes feedFoodType = FoodTypes.parseFoodType(feedFoodTypeInt);
-        FoodTypes preyFoodType = FoodTypes.parseFoodType(preyFoodTypeInt);
+        Animal animalToFeed = storageManager.getAnimals().get(animalId);
+        Food prey = storageManager.getAll().get(foodId);
 
-        Animal animalToFeed = storageManager.getAnimals().get(new CompositeKey(feedFoodType, animalId));
-        Food prey = storageManager.getAll().get(new CompositeKey(preyFoodType, foodId));
-        if (animalToFeed != null) {
-            try {
-                boolean preyEaten = animalToFeed.seeFood(prey);
-                if (preyEaten)
-                    feedStatus = "животное успешно покормлено";
-                else
-                    feedStatus = "животное не съело добычу";
-            } catch (IllegalStateException | IllegalArgumentException e) {
-                feedStatus += e.getMessage();
-            }
+        if (animalToFeed == null) {
+            feedStatus += "не найдено животное для кормления";
+            return feedStatus;
         }
+
+        try {
+            boolean preyEaten = animalToFeed.seeFood(prey);
+            if (preyEaten)
+                feedStatus = "животное успешно покормлено";
+            else
+                feedStatus = "животное не съело добычу";
+        } catch (IllegalStateException | IllegalArgumentException e) {
+            feedStatus += e.getMessage();
+        }
+
         return feedStatus;
     }
 
@@ -142,5 +198,17 @@ public class GeneralController {
 
     public static Map<Integer, Grass> getGrasses() {
         return storageManager.getGrasses();
+    }
+
+    public static Map<Integer, Food> getAllFoods() {
+        return storageManager.getAll();
+    }
+
+    public static Map<Integer, Animal> getAnimals() {
+        return storageManager.getAnimals();
+    }
+
+    public static Map<Integer, String> getFoodTypes() {
+        return FoodTypes.getLocalisedNames();
     }
 }

@@ -1,6 +1,5 @@
 package app;
 
-import networker.NetworkController;
 import networker.Request;
 import networker.Response;
 
@@ -9,19 +8,21 @@ import java.net.Socket;
 
 public class Session implements Runnable {
     private final Socket clientSocket;
+    private final MultiThreadedServer parent;
     private final Logger logger;
     private DataOutputStream out;
     private DataInputStream in;
 
-    public Session(Socket clientSocket, Logger logger) {
+    public Session(Socket clientSocket, MultiThreadedServer parent, Logger logger) {
         this.clientSocket = clientSocket;
+        this.parent = parent;
         this.logger = logger;
         try {
             out = new DataOutputStream(this.clientSocket.getOutputStream());
             in = new DataInputStream(this.clientSocket.getInputStream());
             this.logger.logMessage("server prepared in/out streams");
         } catch (IOException ex) {
-            ex.printStackTrace();
+            this.logger.logMessage("Ошибка при создании сессии: " + ex.getMessage());
         }
     }
 
@@ -33,18 +34,18 @@ public class Session implements Runnable {
                 logger.logMessage("server entered while loop for current session");
                 String inputLine = in.readUTF();
 
-                Request request = Request.parseRequest(inputLine);/* NetworkController.parseQueryString(inputLine);*/
-                Response response = NetworkController.prepareResponse(request);
+                Request request = Request.parseRequest(inputLine);
+                Response response = GeneralController.prepareResponse(request);
 
                 out.writeUTF(response.getMessage());
                 logger.logMessage("responded to client " + clientSocket.toString());
 
                 if (response.isClosureStatus()) {
-                    closeSession();
+                    parent.removeSession(this);
                     break;
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException e) { // todo: handle SocketException that states "Connection reset"
             e.printStackTrace();
         }
     }
@@ -54,7 +55,6 @@ public class Session implements Runnable {
         in.close();
         out.close();
         clientSocket.close();
-        // todo: a way to delete session upon completion
     }
 
     public Socket getClientSocket() {
