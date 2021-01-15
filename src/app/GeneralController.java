@@ -41,14 +41,9 @@ public class GeneralController {
                 throw new IllegalArgumentException("порт не должен быть пустой");
             }
 
-            portString = portString.trim();
-            int port;
-            try {
-                port = Integer.parseInt(portString);
-            } catch (NumberFormatException ex) {
+            int port = Integer.parseInt(portString.trim());
+            if (!(port >= 0 && port <= 65535))
                 throw new IllegalArgumentException("введен неверный порт");
-            }
-
             server.launch(port, logger);
             logger.logMessage("Сервер успешно запущен " + LocalDateTime.now());
 
