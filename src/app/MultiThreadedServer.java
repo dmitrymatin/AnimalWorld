@@ -29,12 +29,10 @@ public class MultiThreadedServer {
     public void launch(int port, Logger logger) throws Exception {
         if (listen)
             throw new Exception("server has already been started");
-
         this.logger = logger;
 
         try {
             serverSocket = new ServerSocket(port);
-
             logger.logMessage("created ServerSocket, port: " + port);
         } catch (IOException e) {
             throw new Exception("Error occurred while trying to launch server", e);
@@ -42,18 +40,18 @@ public class MultiThreadedServer {
 
         Runnable runnableServerLauncher = new Runnable() {
             public void run() {
-                startListening(port);
+                startListening();
             }
         };
         Thread serverLauncherThread = new Thread(runnableServerLauncher);
         serverLauncherThread.start();
     }
 
-    private void startListening(int port) {
+    private void startListening() {
         listen = true;
         try {
             while (listen) {
-                logger.logMessage("ServerSocket waiting for incoming requests on port " + port); // TODO: EDT
+                logger.logMessage("ServerSocket waiting for incoming requests on port " + serverSocket.getLocalPort()); // TODO: EDT
                 Socket socket = serverSocket.accept();
                 logger.logMessage("server received client request using socket @" + socket.hashCode() + " " + socket.toString());
 
