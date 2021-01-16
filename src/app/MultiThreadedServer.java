@@ -58,7 +58,7 @@ public class MultiThreadedServer {
                 Socket socket = serverSocket.accept();
                 logger.logMessage(rb.getString("CLIENT_CONNECT") + ": " + socket.getInetAddress());
 
-                Session session = new Session(socket, this, logger);
+                Session session = new Session(socket, this, logger, rb);
                 sessions.add(session);
                 logger.logMessage(rb.getString("SESSION_CREATED"));
 

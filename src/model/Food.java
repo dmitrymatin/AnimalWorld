@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(value = {"name", "mass"})
 public abstract class Food implements Serializable {
-    protected transient final ResourceBundle rb = ResourceBundle.getBundle("ResourceBundle");
+    protected static transient final ResourceBundle rb = ResourceBundle.getBundle("ResourceBundle");
     protected String name;
     protected float mass;
 
