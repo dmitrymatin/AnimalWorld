@@ -7,9 +7,10 @@ import java.util.*;
 public class StorageManager {
     private final ResourceBundle rb = ResourceBundle.getBundle("ResourceBundle", Locale.getDefault());
 
-    private final String PREDATORS_FILENAME = rb.getString("PREDATORS_FILENAME");
-    private final String HERBIVORES_FILENAME = rb.getString("HERBIVORES_FILENAME");
-    private final String GRASSES_FILENAME = rb.getString("GRASSES_FILENAME");
+    private final Properties props = new Properties();
+    private final String PREDATORS_FILENAME = props.getProperty("PREDATORS_FILENAME");
+    private final String HERBIVORES_FILENAME = props.getProperty("HERBIVORES_FILENAME");
+    private final String GRASSES_FILENAME = props.getProperty("GRASSES_FILENAME");
 
     private static StorageManager uniqueInstance = null;
 

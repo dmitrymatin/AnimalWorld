@@ -1,6 +1,7 @@
 package app;
 
 import java.awt.*;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class ServerForm extends Frame {
@@ -46,7 +47,7 @@ public class ServerForm extends Frame {
         stopServerButton.setBounds(140, 50, 120, 30);
         exitButton.setBounds(270, 50, 120, 30);
 
-        portTextField.setText(rb.getString("DEFAULT_PORT"));
+        portTextField.setText(new Properties().getProperty("DEFAULT_PORT"));
         stopServerButton.setEnabled(false);
 
         controlPanel.add(portLabel);
