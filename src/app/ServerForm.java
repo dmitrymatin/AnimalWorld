@@ -47,7 +47,7 @@ public class ServerForm extends Frame {
         stopServerButton.setBounds(140, 50, 120, 30);
         exitButton.setBounds(270, 50, 120, 30);
 
-        portTextField.setText(new Properties().getProperty("DEFAULT_PORT"));
+        portTextField.setText(GeneralController.getProperties().getProperty("DEFAULT_PORT"));
         stopServerButton.setEnabled(false);
 
         controlPanel.add(portLabel);

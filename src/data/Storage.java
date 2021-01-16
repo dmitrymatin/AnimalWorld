@@ -21,6 +21,9 @@ class Storage<E> {
 
     public boolean saveElements(String fileName) {
         try {
+            if (fileName == null)
+                throw new IOException();
+
             FileOutputStream fos = new FileOutputStream(fileName);
             ObjectOutputStream ous = new ObjectOutputStream(fos);
             ous.writeObject(elements);

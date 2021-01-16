@@ -8,24 +8,25 @@ import model.*;
 import networker.Request;
 import networker.Response;
 
+import java.io.FileInputStream;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class GeneralController {
-    private static final StorageManager storageManager = StorageManager.getInstance();
     private static MultiThreadedServer server = null;
     private static ServerForm serverForm = null;
     private static ServerFormListener serverFormListener = null;
     private static Logger logger = null;
     private static ResourceBundle rb = ResourceBundle.getBundle("ResourceBundle", new Locale("ru"));
+    private static Properties properties = new Properties();
+    private final static String PROPS_FILENAME = "settings.properties";
+    private static final StorageManager storageManager = StorageManager.getInstance();
 
     public static void startApp(ResourceBundle rb) {
         GeneralController.rb = rb;
         String startStatus = "";
         try {
+            GeneralController.properties.load(new FileInputStream(PROPS_FILENAME));
             storageManager.load();
             startStatus += rb.getString("STORAGE_LOADED");
         } catch (Exception ex) {
@@ -215,5 +216,9 @@ public class GeneralController {
 
     public static Map<Integer, String> getFoodTypes() {
         return FoodTypes.getLocalisedNames();
+    }
+
+    public static Properties getProperties(){
+        return properties;
     }
 }

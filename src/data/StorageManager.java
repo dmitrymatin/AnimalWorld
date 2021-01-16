@@ -1,24 +1,23 @@
 package data;
 
+import app.GeneralController;
 import model.*;
 
 import java.util.*;
 
 public class StorageManager {
     private final ResourceBundle rb = ResourceBundle.getBundle("ResourceBundle", Locale.getDefault());
-
-    private final Properties props = new Properties();
-    private final String PREDATORS_FILENAME = props.getProperty("PREDATORS_FILENAME");
-    private final String HERBIVORES_FILENAME = props.getProperty("HERBIVORES_FILENAME");
-    private final String GRASSES_FILENAME = props.getProperty("GRASSES_FILENAME");
+    private String PREDATORS_FILENAME;
+    private String HERBIVORES_FILENAME;
+    private String GRASSES_FILENAME;
 
     private static StorageManager uniqueInstance = null;
 
     private int elementsCount = 0;
 
-    private Storage<Predator> predatorStorage = new Storage<>();
-    private Storage<Herbivore> herbivoreStorage = new Storage<>();
-    private Storage<Grass> grassStorage = new Storage<>();
+    private final Storage<Predator> predatorStorage = new Storage<>();
+    private final Storage<Herbivore> herbivoreStorage = new Storage<>();
+    private final Storage<Grass> grassStorage = new Storage<>();
 
 
     private StorageManager() {
@@ -65,11 +64,14 @@ public class StorageManager {
     }
 
     public void load() throws Exception {
+        PREDATORS_FILENAME = GeneralController.getProperties().getProperty("PREDATORS_FILENAME");
+        HERBIVORES_FILENAME = GeneralController.getProperties().getProperty("HERBIVORES_FILENAME");
+        GRASSES_FILENAME = GeneralController.getProperties().getProperty("GRASSES_FILENAME");
         try {
             int maxPredatorId = predatorStorage.loadElements(PREDATORS_FILENAME);
             int maxHerbivoreId = herbivoreStorage.loadElements(HERBIVORES_FILENAME);
             int maxGrassId = grassStorage.loadElements(GRASSES_FILENAME);
-            int[] maxIds = new int[] {maxPredatorId, maxHerbivoreId, maxGrassId};
+            int[] maxIds = new int[]{maxPredatorId, maxHerbivoreId, maxGrassId};
 
             elementsCount = Arrays.stream(maxIds).max().getAsInt();
         } catch (IllegalAccessException ex) {
