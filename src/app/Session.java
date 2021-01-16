@@ -5,6 +5,7 @@ import networker.Response;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ResourceBundle;
 
 public class Session implements Runnable {
     private final Socket clientSocket;
@@ -12,33 +13,32 @@ public class Session implements Runnable {
     private final Logger logger;
     private DataOutputStream out;
     private DataInputStream in;
+    private final ResourceBundle rb;
 
-    public Session(Socket clientSocket, MultiThreadedServer parent, Logger logger) {
+    public Session(Socket clientSocket, MultiThreadedServer parent, Logger logger, ResourceBundle resourceBundle) {
         this.clientSocket = clientSocket;
         this.parent = parent;
         this.logger = logger;
+        this.rb = resourceBundle;
         try {
             out = new DataOutputStream(this.clientSocket.getOutputStream());
             in = new DataInputStream(this.clientSocket.getInputStream());
-            this.logger.logMessage("server prepared in/out streams");
         } catch (IOException ex) {
-            this.logger.logMessage("Ошибка при создании сессии: " + ex.getMessage());
+            this.logger.logMessage(rb.getString("ERROR_SESSION_CREATE_FAIL") + ": " + ex.getMessage());
         }
     }
 
     public void run() {
         try {
-            out.writeUTF("вы подключены!");
-            logger.logMessage("отправлено сообщение клиенту");
+            out.writeUTF(rb.getString("SUCCESS_CONNECT"));
             while (true) {
-                logger.logMessage("server entered while loop for current session");
                 String inputLine = in.readUTF();
 
                 Request request = Request.parseRequest(inputLine);
                 Response response = GeneralController.prepareResponse(request);
 
                 out.writeUTF(response.getMessage());
-                logger.logMessage("responded to client " + clientSocket.toString());
+                logger.logMessage(rb.getString("RESPONSE_SENT"));
 
                 if (response.isClosureStatus()) {
                     parent.removeSession(this);
@@ -51,7 +51,7 @@ public class Session implements Runnable {
     }
 
     void closeSession() throws IOException {
-        logger.logMessage("closing session @" + this.hashCode());
+        logger.logMessage(rb.getString("SESSION_CLOSING") + this.hashCode());
         in.close();
         out.close();
         clientSocket.close();

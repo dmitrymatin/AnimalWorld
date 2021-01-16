@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 
 public class MultiThreadedServer {
     private static MultiThreadedServer uniqueInstance = null;
@@ -13,29 +14,31 @@ public class MultiThreadedServer {
     private Logger logger = null;
 
     private ServerSocket serverSocket = null;
-    ArrayList<Session> sessions = new ArrayList<>();
+    private ArrayList<Session> sessions = new ArrayList<>();
+    private ResourceBundle rb;
 
-    public static MultiThreadedServer getInstance() {
+    public static MultiThreadedServer getInstance(ResourceBundle resourceBundle) {
         if (uniqueInstance == null) {
-            uniqueInstance = new MultiThreadedServer();
+            uniqueInstance = new MultiThreadedServer(resourceBundle);
         }
 
         return uniqueInstance;
     }
 
-    private MultiThreadedServer() {
+    private MultiThreadedServer(ResourceBundle resourceBundle) {
+        this.rb = resourceBundle;
     }
 
     public void launch(int port, Logger logger) throws Exception {
         if (listen)
-            throw new Exception("server has already been started");
+            throw new Exception(rb.getString("ERROR_SERVER_ALREADY_STARTED"));
         this.logger = logger;
 
         try {
             serverSocket = new ServerSocket(port);
-            logger.logMessage("created ServerSocket, port: " + port);
+            logger.logMessage(rb.getString("CREATED_SERVER_SOCKET_ON_PORT") + ": " + port);
         } catch (IOException e) {
-            throw new Exception("Error occurred while trying to launch server", e);
+            throw new Exception(rb.getString("ERROR_ON_SERVER_START"), e);
         }
 
         Runnable runnableServerLauncher = new Runnable() {
@@ -51,23 +54,23 @@ public class MultiThreadedServer {
         listen = true;
         try {
             while (listen) {
-                logger.logMessage("ServerSocket waiting for incoming requests on port " + serverSocket.getLocalPort()); // TODO: EDT
+                logger.logMessage(rb.getString("SOCKET_AWAIT") + ": " + serverSocket.getLocalPort()); // TODO: EDT
                 Socket socket = serverSocket.accept();
-                logger.logMessage("server received client request using socket @" + socket.hashCode() + " " + socket.toString());
+                logger.logMessage(rb.getString("CLIENT_CONNECT") + ": " + socket.getInetAddress());
 
                 Session session = new Session(socket, this, logger);
                 sessions.add(session);
-                logger.logMessage("Session instance created " + session.hashCode()); // TODO: EDT
+                logger.logMessage(rb.getString("SESSION_CREATED"));
 
                 Thread thread = new Thread(session);
                 thread.start();
 
-                logger.logMessage("Server created new thread " + thread.getName()); // TODO: EDT
+                logger.logMessage(rb.getString("THREAD_CREATED") + ": " + thread.getName());
             }
         } catch (SocketException se) {
-            logger.logMessage("Сокет закрыт");
+            logger.logMessage(rb.getString("SOCKET_CLOSED"));
         } catch (IOException e) {
-            logger.logMessage("Произошла ошибка во время работы сервера: " + e.getMessage());
+            logger.logMessage(rb.getString("ERROR_SERVER_FAIL") + ": " + e.getMessage());
             stop();
         } finally {
             terminateSessions();
@@ -84,7 +87,7 @@ public class MultiThreadedServer {
         try {
             serverSocket.close();
         } catch (IOException e) {
-            logger.logMessage("Произошла ошибка при закрытии сервера " + e.getMessage());
+            logger.logMessage(rb.getString("ERROR_SERVER_CLOSE_FAIL") + ": " + e.getMessage());
         }
         finally {
             listen = false;
@@ -96,7 +99,7 @@ public class MultiThreadedServer {
             session.closeSession();
             sessions.remove(session);
         } catch (IOException ex) {
-            logger.logMessage("Произошла ошибка во время удаления сессии: " + ex.getMessage());
+            logger.logMessage(rb.getString("ERROR_SESSION_REMOVE_FAIL") + ": " + ex.getMessage());
         }
     }
 }

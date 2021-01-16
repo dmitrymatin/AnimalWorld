@@ -18,12 +18,12 @@ public abstract class Animal extends Food {
 
     public void kill() throws IllegalStateException {
         if (!isAlive)
-            throw new IllegalStateException("Cannot kill a dead animal");
+            throw new IllegalStateException(rb.getString("ERROR_KILL_DEAD_ANIMAL_ILLEGAL"));
         isAlive = false;
     }
 
     public String getInfo() {
-        return super.getInfo() + (isAlive ? " (живое)" : " (мертвое)");
+        return super.getInfo() + (isAlive ? " (" + rb.getString("ALIVE_VALUE") + ")" : " (" + rb.getString("DEAD_VALUE") + ")");
     }
 
     public boolean isAlive() {

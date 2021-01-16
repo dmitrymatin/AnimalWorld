@@ -1,11 +1,10 @@
 package data;
 
 import java.io.*;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 class Storage<E> {
+    private final ResourceBundle rb = ResourceBundle.getBundle("ResourceBundle", Locale.getDefault());
     private Map<Integer, E> elements = new HashMap<>();
 
     public void addElement(int id, E element) {
@@ -45,7 +44,6 @@ class Storage<E> {
 
             if (obj instanceof Map) {
                 elements = (Map<Integer, E>) obj;
-                System.out.println("successfully loaded elements (" + elements.getClass() + ")");
             }
 
             ois.close();
@@ -53,7 +51,7 @@ class Storage<E> {
 
             return elements.keySet().size() == 0 ? 0 : Collections.max(elements.keySet());
         } catch (ClassNotFoundException | IOException ex) {
-            throw new IllegalAccessException("could not load data from file " + ex.getMessage());
+            throw new IllegalAccessException(rb.getString("ERROR_LOAD_FROM_FILE_FAIL") + ": " + ex.getMessage());
         }
     }
 

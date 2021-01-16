@@ -1,5 +1,8 @@
 package networker;
 
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 public class Response {
     private final boolean closureStatus;
     private final boolean errorStatus;
@@ -12,8 +15,9 @@ public class Response {
     }
 
     public static Response parseResponse(String responseString) {
-        boolean closureStatus = responseString.startsWith("стоп");
-        boolean errorStatus = responseString.startsWith("ошибка");
+        ResourceBundle rb = ResourceBundle.getBundle("ResourceBundle", Locale.getDefault());
+        boolean closureStatus = responseString.startsWith(rb.getString("RESPONSE_CLOSURE_STATUS_FLAG"));
+        boolean errorStatus = responseString.startsWith(rb.getString("RESPONSE_ERROR_STATUS_FLAG"));
 
         return new Response(closureStatus, errorStatus, responseString);
     }

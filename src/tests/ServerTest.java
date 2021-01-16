@@ -16,7 +16,7 @@ import java.net.Socket;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ServerTest {
-    private static final MultiThreadedServer server = MultiThreadedServer.getInstance();
+    private static final MultiThreadedServer server = MultiThreadedServer.getInstance(null);//todo: rb
     private static final StorageManager storageManager = StorageManager.getInstance();
     private static Logger logger = null;
 

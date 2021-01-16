@@ -5,9 +5,11 @@ import model.*;
 import java.util.*;
 
 public class StorageManager {
-    private final String PREDATORS_FILENAME = "predators.dat";
-    private final String HERBIVORES_FILENAME = "herbivores.dat";
-    private final String GRASSES_FILENAME = "grasses.dat";
+    private final ResourceBundle rb = ResourceBundle.getBundle("ResourceBundle", Locale.getDefault());
+
+    private final String PREDATORS_FILENAME = rb.getString("PREDATORS_FILENAME");
+    private final String HERBIVORES_FILENAME = rb.getString("HERBIVORES_FILENAME");
+    private final String GRASSES_FILENAME = rb.getString("GRASSES_FILENAME");
 
     private static StorageManager uniqueInstance = null;
 
@@ -16,6 +18,7 @@ public class StorageManager {
     private Storage<Predator> predatorStorage = new Storage<>();
     private Storage<Herbivore> herbivoreStorage = new Storage<>();
     private Storage<Grass> grassStorage = new Storage<>();
+
 
     private StorageManager() {
     }
@@ -69,7 +72,7 @@ public class StorageManager {
 
             elementsCount = Arrays.stream(maxIds).max().getAsInt();
         } catch (IllegalAccessException ex) {
-            throw new Exception("could not load data \n" + ex.getMessage());
+            throw new Exception(rb.getString("ERROR_LOAD_DATA_FAIL") + ": " + ex.getMessage());
         }
     }
 

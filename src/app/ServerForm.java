@@ -1,22 +1,31 @@
 package app;
 
 import java.awt.*;
+import java.util.ResourceBundle;
 
 public class ServerForm extends Frame {
+    private ResourceBundle rb;
+
     // server control part
     Panel controlPanel = new Panel();
-    Label portLabel = new Label("Порт");
+    Label portLabel = new Label();
     TextField portTextField = new TextField();
-    Button startServerButton = new Button("Запустить");
-    Button stopServerButton = new Button("Остановить");
-    Button exitButton = new Button("Выход");
+    Button startServerButton = new Button();
+    Button stopServerButton = new Button();
+    Button exitButton = new Button();
 
     // logging part
     Panel loggingPanel = new Panel();
     TextArea loggingTextArea = new TextArea();
 
-    public ServerForm(String title) throws HeadlessException {
+    public ServerForm(String title, ResourceBundle rb) throws HeadlessException {
         super(title);
+        this.rb = rb;
+
+        portLabel.setText(rb.getString("PORT_LABEL"));
+        startServerButton.setLabel(rb.getString("START_LABEL"));
+        stopServerButton.setLabel(rb.getString("STOP_LABEL"));
+        exitButton.setLabel(rb.getString("EXIT_LABEL"));
 
         setSize(560, 380);
         setLayout(null);
@@ -37,7 +46,7 @@ public class ServerForm extends Frame {
         stopServerButton.setBounds(140, 50, 120, 30);
         exitButton.setBounds(270, 50, 120, 30);
 
-        portTextField.setText("7070");
+        portTextField.setText(rb.getString("DEFAULT_PORT"));
         stopServerButton.setEnabled(false);
 
         controlPanel.add(portLabel);

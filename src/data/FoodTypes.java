@@ -1,7 +1,9 @@
 package data;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 public enum FoodTypes {
     Predator("Хищник"),
@@ -9,13 +11,14 @@ public enum FoodTypes {
     Grass("Трава");
 
     private final String label;
-
     private static final Map<Integer, String> labels = new HashMap<>();
+    private static final ResourceBundle rb;
 
     static {
         for (FoodTypes e : values()) {
             labels.put(e.ordinal(), e.label);
         }
+        rb = ResourceBundle.getBundle("ResourceBundle", Locale.getDefault());
     }
 
     FoodTypes(String label) {
@@ -26,7 +29,7 @@ public enum FoodTypes {
         if (foodTypeOrdinal >=0 && foodTypeOrdinal < FoodTypes.values().length) {
             return FoodTypes.values()[foodTypeOrdinal];
         } else {
-            throw new IllegalArgumentException("food type was out of range");
+            throw new IllegalArgumentException(rb.getString("FOODTYPE_OUT_RANGE"));
         }
     }
 

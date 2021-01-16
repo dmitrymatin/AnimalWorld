@@ -10,7 +10,9 @@ import networker.Response;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 public class GeneralController {
     private static final StorageManager storageManager = StorageManager.getInstance();
@@ -18,18 +20,20 @@ public class GeneralController {
     private static ServerForm serverForm = null;
     private static ServerFormListener serverFormListener = null;
     private static Logger logger = null;
+    private static ResourceBundle rb = ResourceBundle.getBundle("ResourceBundle", new Locale("ru"));
 
-    public static void startApp() {
+    public static void startApp(ResourceBundle rb) {
+        GeneralController.rb = rb;
         String startStatus = "";
         try {
             storageManager.load();
-            startStatus += "содержимое хранилища загружено";
+            startStatus += rb.getString("STORAGE_LOADED");
         } catch (Exception ex) {
-            startStatus += "хранилище пусто";
+            startStatus += rb.getString("STORAGE_EMPTY");
         }
 
-        server = MultiThreadedServer.getInstance();
-        serverForm = new ServerForm("Сервер");
+        server = MultiThreadedServer.getInstance(rb);
+        serverForm = new ServerForm(rb.getString("FORM_TITLE"), rb);
         logger = new FormLogger(serverForm.getTextArea());
         serverFormListener = new ServerFormListener(serverForm, logger);
         logger.logMessage(startStatus);
@@ -38,29 +42,29 @@ public class GeneralController {
     public static void startServer(String portString) {
         try {
             if (portString.isBlank()) {
-                throw new IllegalArgumentException("порт не должен быть пустой");
+                throw new IllegalArgumentException(rb.getString("ERROR_PORT_EMPTY"));
             }
 
             int port = Integer.parseInt(portString.trim());
             if (!(port >= 0 && port <= 65535))
-                throw new IllegalArgumentException("введен неверный порт");
+                throw new IllegalArgumentException(rb.getString("ERROR_PORT_INVALID"));
             server.launch(port, logger);
-            logger.logMessage("Сервер успешно запущен " + LocalDateTime.now());
+            logger.logMessage(rb.getString("SERVER_START") + ": " + LocalDateTime.now());
 
             serverForm.onStartServer();
         } catch (Exception ex) {
-            logger.logMessage("Произошла ошибка при запуске сервера: " + ex.getMessage()); // todo: некорректные данные на форму, DONE
+            logger.logMessage(rb.getString("ERROR_SERVER_NOT_START") + ": " + ex.getMessage());
         }
     }
 
     public static void stopServer() {
         server.stop();
-        logger.logMessage("сервер остановлен " + LocalDateTime.now());
+        logger.logMessage(rb.getString("SERVER_STOP") + ": " + LocalDateTime.now());
         serverForm.onStopServer();
     }
 
     public static void persistData() {
-        logger.logMessage("сохранение данных ...");
+        logger.logMessage(rb.getString("DATA_SAVE") + "...");
         storageManager.save();
     }
 
@@ -94,7 +98,8 @@ public class GeneralController {
                             value = GeneralController.getFoodTypes();
                             break;
                         default:
-                            return new Response(false, true, "ошибка: Неверный аргумент " + args.get(0) + " команды " + request.getCommand());
+                            return new Response(false, true,
+                                    rb.getString("ERROR_INVALID_ARG") + " " + args.get(0) + " " + rb.getString("CURRENT_COMMAND") + ": " + request.getCommand());
                     }
                     try {
                         jsonString = objectMapper.writeValueAsString(value);
@@ -120,11 +125,11 @@ public class GeneralController {
                 break;
 
             case "stp":
-                return new Response(true, false, "стоп: сессия завершена");
+                return new Response(true, false, rb.getString("SESSION_STOP"));
             default:
-                return new Response(false, true, "ошибка: несуществующая операция");
+                return new Response(false, true, rb.getString("INVALID_OPERATION"));
         }
-        return new Response(false, true, "ошибка: несуществующая команда");
+        return new Response(false, true, rb.getString("INVALID_COMMAND"));
     }
 
     public static String createFood(String foodTypeString, String name, String mass) {
@@ -148,22 +153,22 @@ public class GeneralController {
                     break;
             }
             storageManager.addFood(food);
-            creationStatus = "еда успешно создана";
+            creationStatus = rb.getString("FOOD_CREATED");
         } catch (Exception ex) {
-            creationStatus = "еда не была создана: переданы неверные параметры";
+            creationStatus = rb.getString("FOOD_NOT_CREATED");
         }
         return creationStatus;
     }
 
     public static String feed(String animalIdString, String foodIdString) {
-        String feedStatus = "не удалось покормить животное: ";
+        String feedStatus = rb.getString("ERROR_FEED_FAIL_GENERAL");
         int animalId;
         int foodId;
         try {
             animalId = Integer.parseInt(animalIdString);
             foodId = Integer.parseInt(foodIdString);
         } catch (NumberFormatException e) {
-            feedStatus += "переданы неверные параметры";
+            feedStatus += ": " + rb.getString("ERROR_FEED_INVALID_ARGS");
             return feedStatus;
         }
 
@@ -171,16 +176,16 @@ public class GeneralController {
         Food prey = storageManager.getAll().get(foodId);
 
         if (animalToFeed == null) {
-            feedStatus += "не найдено животное для кормления";
+            feedStatus += rb.getString("ERROR_ANIMAL_TO_FEED_NOT_FOUND");
             return feedStatus;
         }
 
         try {
             boolean preyEaten = animalToFeed.seeFood(prey);
             if (preyEaten)
-                feedStatus = "животное успешно покормлено";
+                feedStatus = rb.getString("ANIMAL_FEED_SUCCESS");
             else
-                feedStatus = "животное не съело добычу";
+                feedStatus = rb.getString("ANIMAL_DID_NOT_EAT");
         } catch (IllegalStateException | IllegalArgumentException e) {
             feedStatus += e.getMessage();
         }
