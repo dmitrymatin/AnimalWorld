@@ -15,7 +15,6 @@ import java.util.*;
 public class GeneralController {
     private static MultiThreadedServer server = null;
     private static ServerForm serverForm = null;
-    private static ServerFormListener serverFormListener = null;
     private static Logger logger = null;
     private static ResourceBundle rb = ResourceBundle.getBundle("ResourceBundle", new Locale("ru"));
     private static Properties properties = new Properties();
@@ -36,7 +35,7 @@ public class GeneralController {
         server = MultiThreadedServer.getInstance(rb);
         serverForm = new ServerForm(rb.getString("FORM_TITLE"), rb);
         logger = new FormLogger(serverForm.getTextArea());
-        serverFormListener = new ServerFormListener(serverForm, logger);
+        new ServerFormListener(serverForm, logger);
         logger.logMessage(startStatus);
     }
 
@@ -71,7 +70,6 @@ public class GeneralController {
 
     public static Response prepareResponse(Request request) {
         ArrayList<String> args = request.getArgs();
-        // todo: break switch actions into smaller methods
         switch (request.getCommand()) {
             case "get":
                 // getting
